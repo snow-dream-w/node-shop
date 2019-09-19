@@ -1,19 +1,25 @@
 {
-  "name": "shop",
+  "name": "blog",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/beautiful-night/node-shop.git"
-  },
+  "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/beautiful-night/node-shop/issues"
-  },
-  "homepage": "https://github.com/beautiful-night/node-shop#readme"
+  "dependencies": {
+    "@koa/cors": "^3.0.0",
+    "koa": "^2.7.0",
+    "koa-body": "^4.1.0",
+    "koa-compress": "^3.0.0",
+    "koa-logger": "^3.2.1",
+    "koa-multer": "^1.0.2",
+    "koa-router": "^7.4.0",
+    "koa-session": "^5.12.2",
+    "koa-static": "^5.0.0",
+    "koa-views": "^6.2.0",
+    "mongoose": "^5.6.5"
+  }
 }
