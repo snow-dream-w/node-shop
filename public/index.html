@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <button onclick="submit()">提交</button>
+    <script>
+        function submit() {
+            $.ajax({
+                url: "/user/register",
+                method: "post",
+                data: {
+                    telephone: '17865579761',
+                    password: 'qiankun1995'
+                },
+                success(result) {
+                    console.log(result);
+                }
+            })
+        }
+
+
+    </script>
+</body>
+
+</html>
