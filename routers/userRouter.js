@@ -6,14 +6,18 @@ const user = require('../Controller/user')
 
 const router = new Router
 
+//请求首页
 router.get("/", async (ctx) => {
-    ctx.body = fs.readFileSync(join(__dirname, "../public/index.html"),'utf-8')
-})
+    ctx.body = fs.readFileSync(join(__dirname, "../public/index.html"),'utf-8');
+});
 
-router.post("/user/register",user.reg)
+//登录
+router.post("/user/login",user.login);
 
-router.get("/user/:id",(ctx) => {
-    ctx.body = ctx.params.id
-})
+//注册
+router.post("/user/register",user.register);
+
+//退出登录
+router.get("/user/logout",user.keepLogin,user.logout);
 
 module.exports = router
