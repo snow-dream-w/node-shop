@@ -1,5 +1,9 @@
-const User = require('../Models/user');
-const encrypt = require("../utils/encrypt")
+const User = require('../Models/UserModel');
+const UserDao = require('../Dao/UserDao')
+const userDao = new UserDao()
+const UserService = require('../Service/UserService')
+const userService = new UserService(userDao)
+const encrypt = require("../Utils/encrypt")
 
 //用户注册
 exports.register = async (ctx) => {
@@ -40,28 +44,18 @@ exports.register = async (ctx) => {
 }
 
 //用户登录
-exports.login = async (ctx) => {
+exports.loginAccount = async (ctx) => {
     //取参数
     const user = ctx.request.body
     const userId = user.telephone
     const password = user.password
     //查找数据
-    await new Promise((resolve, reject) => {
-        User.findOne({ telephone: userId }, (err, data) => {
-            if (err) {
-                return reject(err)
-            } else {
-                if (data.telephone) {
-                    if (data.password === encrypt(password)) {
-                        return resolve(data)
-                    } else {
-                        return reject("密码错误")
-                    }
-                } else {
-                    return reject("账号不存在")
-                }
-            }
-        })
+    await new Promise(async (resolve, reject) => {
+        let result = await userService.loginAccount(userId,password)
+        if(result.status === 0){
+            return reject(result.data)
+        }
+        return resolve(result.data)
     }).then((data) => {
         //给客户端设置cookie
         ctx.cookies.set("uid", data.telephone, {

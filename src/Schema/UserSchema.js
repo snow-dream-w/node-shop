@@ -1,4 +1,4 @@
-const { Schema } = require('../utils/connect');
+const { Schema } = require('../Utils/connect');
 
 const UserSchema = new Schema({
     telephone: {

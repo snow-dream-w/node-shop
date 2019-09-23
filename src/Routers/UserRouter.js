@@ -2,7 +2,7 @@ const Router = require('koa-router')
 const fs = require('fs')
 const {join} = require('path')
 
-const user = require('../Controller/user')
+const user = require('../Controller/UserController')
 
 const router = new Router
 
@@ -12,7 +12,7 @@ router.get("/", async (ctx) => {
 });
 
 //登录
-router.post("/user/login",user.login);
+router.post("/user/login",user.loginAccount);
 
 //注册
 router.post("/user/register",user.register);

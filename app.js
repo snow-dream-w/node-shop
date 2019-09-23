@@ -7,7 +7,7 @@ const compress = require('koa-compress');
 const session = require('koa-session');
 const cors = require('@koa/cors');
 
-const userRouter = require('./routers/userRouter');
+const userRouter = require('./src/Routers/UserRouter');
 
 const app = new Koa;
 
