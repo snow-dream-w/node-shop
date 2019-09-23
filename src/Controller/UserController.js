@@ -1,11 +1,12 @@
-const User = require('../Models/UserModel');
 const UserDao = require('../Dao/UserDao')
 const userDao = new UserDao()
 const UserService = require('../Service/UserService')
 const userService = new UserService(userDao)
 const encrypt = require("../Utils/encrypt")
 
-//用户注册
+/**
+ * 用户注册
+ */
 exports.register = async (ctx) => {
     //接收参数
     const user = ctx.request.body
@@ -19,31 +20,17 @@ exports.register = async (ctx) => {
     user['busNum'] = 0
 
     //发起保存请求
-    await new Promise((resolve, reject) => {
-        User.find({ telephone: user.telephone }, (err, data) => {
-            if (err) {
-                return reject(err)
-            } else {
-                if (data.length !== 0) {
-                    return reject("用户名已存在")
-                }
-                new User(user).save((err, data) => {
-                    if (err) {
-                        return reject(err)
-                    } else {
-                        resolve(data)
-                    }
-                })
-            }
-        })
-    }).then(data => {
-        ctx.body = data
-    }).catch(err => {
-        ctx.body = err
+    await new Promise(async (resolve, reject) => {
+        let result = await userService.registerAccount(user)
+        return resolve(result)
+    }).then(result => {
+        ctx.body = result
     })
 }
 
-//用户登录
+/**
+ * 用户登录
+ */
 exports.loginAccount = async (ctx) => {
     //取参数
     const user = ctx.request.body
@@ -100,7 +87,9 @@ exports.loginAccount = async (ctx) => {
     })
 }
 
-//保持登录状态
+/**
+ * 保持登录状态
+ */
 exports.keepLogin = async (ctx, next) => {
     if (ctx.session.isNew) {
         if (ctx.cookies.get("username")) {
@@ -114,7 +103,9 @@ exports.keepLogin = async (ctx, next) => {
     await next()
 }
 
-//退出登录
+/**
+ * 退出登录
+ */
 exports.logout = async (ctx) => {
     ctx.session = null;
     ctx.cookies.set("username", null, {
