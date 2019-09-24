@@ -32,7 +32,7 @@ module.exports = class UserService{
      * @param {*用户注册手机号} userId 
      */
     async getUserInfo(userId){
-        return this.userDao.getUserInfo(userId)
+        return await this.userDao.getUserInfo(userId)
     }
     /**
      * 保存头像上传路径
@@ -40,6 +40,29 @@ module.exports = class UserService{
      * @param {*头像路径} avatarPath 
      */
     async uploadUserAvatar(userId,avatarPath){
-        return this.userDao.uploadUserAvatar(userId,avatarPath)
+        return await this.userDao.uploadUserAvatar(userId,avatarPath)
+    }
+    /**
+     * 编辑个人基本信息
+     * @param {*用户注册手机} userId 
+     * @param {*待修改信息对象，包括性别sex和昵称name} info 
+     */
+    async editUserInfo(userId,info){
+        return await this.userDao.editUserInfo(userId,info)
+    }
+    /**
+     * 修改用户密码
+     * @param {*用户注册手机号} userId 
+     * @param {*待修改信息对象，包括旧密码oldPassword和新密码newPassword} pwd
+     */
+    async editUserPassword(userId,pwd){
+        let result = await this.userDao.loginUserAccount(userId,pwd.oldPassword)
+        if(result.status === 1){
+            return await this.userDao.editUserPassword(userId,pwd.newPassword)
+        }
+        return {
+            status: 0,
+            data: "原密码输入错误"
+        }  
     }
 }

@@ -12,6 +12,8 @@
     <button onclick="register()">注册</button>
     <button onclick="login()">登录</button>
     <button onclick="person()">获取个人信息</button>
+    <button onclick="edit()">编辑个人信息</button>
+    <button onclick="changepassword()">修改密码</button>
     <button onclick="logout()">退出登录</button>
     <script src="./juqery.js"></script>
     <script>
@@ -22,6 +24,19 @@
                 data: {
                     telephone: '17865579761',
                     password: 'qiankun1995'
+                },
+                success(result) {
+                    console.log(result);
+                }
+            })
+        }
+        function changepassword() {
+            $.ajax({
+                url: "/user/edit/password",
+                method: "post",
+                data: {
+                    oldPassword: 'qiankun19950629',
+                    newPassword: 'qiankun1995'
                 },
                 success(result) {
                     console.log(result);
@@ -45,6 +60,19 @@
             $.ajax({
                 url: "/user/person/17865579761",
                 method: "get",
+                success(result) {
+                    console.log(result);
+                }
+            })
+        }
+        function edit() {
+            $.ajax({
+                url: "/user/edit/info",
+                method: "post",
+                data: {
+                    name: '吾忆那年秋',
+                    sex: '女'
+                },
                 success(result) {
                     console.log(result);
                 }

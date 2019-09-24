@@ -116,4 +116,44 @@ module.exports = class UserDao {
         })
         return result
     }
+    /**
+     * 编辑个人基本信息
+     * @param {*用户注册手机} userId 
+     * @param {*待修改信息对象，包括性别sex和昵称name} info 
+     */
+    async editUserInfo(userId,info){
+        let result = {
+            status: 0,
+            data: {}
+        }
+        await User.findOneAndUpdate({telephone: userId}, {$set: info},{new: true}, (err,data) => {
+            if(err){
+                result.data = err
+            } else {
+                result.status = 1
+                result.data = data
+            }
+        })
+        return result
+    }
+    /**
+     * 用户修改密码
+     * @param {*用户注册手机号} userId 
+     * @param {*新密码} newPassword 
+     */
+    async editUserPassword(userId,newPassword){
+        let result = {
+            status: 0,
+            data: {}
+        }
+        await User.updateOne({telephone: userId},{$set: {password: encrypt(newPassword)}},(err,data) => {
+            if(err){
+                result.data = err
+            } else {
+                result.status = 1
+                result.data = data
+            }
+        })
+        return result
+    }
 }

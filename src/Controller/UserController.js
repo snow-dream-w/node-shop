@@ -40,10 +40,11 @@ exports.loginUserAccount = async (ctx) => {
     await new Promise(async (resolve, reject) => {
         let result = await userService.loginUserAccount(userId,password)
         if(result.status === 0){
-            return reject(result.data)
+            reject(result.data)
         }
-        return resolve(result.data)
+        resolve(result.data)
     }).then((data) => {
+        //koa 2.x 不支持中文cookie
         //给客户端设置cookie
         ctx.cookies.set("uid", data.telephone, {
             domin: "localhost",
@@ -52,8 +53,8 @@ exports.loginUserAccount = async (ctx) => {
             httpOnly: false, //true不让客户端访问这个cookie
             overwrite: false,
             // signed: false//默认是true
-        })
-        ctx.cookies.set("username", data.name, {
+        });
+        ctx.cookies.set("username", Buffer.from(data.name).toString('base64'), {
             domin: "localhost",
             path: "/",
             maxAge: 36e5,
@@ -68,7 +69,7 @@ exports.loginUserAccount = async (ctx) => {
             httpOnly: true, //不让客户端访问这个cookie
             overwrite: false,
             // signed: false
-        })
+        });
 
         //后台设置session
         ctx.session = {
@@ -128,6 +129,50 @@ exports.uploadUserAvatar = async (ctx) => {
         ctx.body = data
     })
 }
+
+/**
+ * 编辑用户信息
+ */
+exports.editUserInfo = async (ctx) => {
+    if(ctx.session.isNew){
+        return ctx.body = {
+            status: 0,
+            data: "未登录"
+        }
+    }
+    const userId = ctx.session.uid
+    //取出参数
+    const info = ctx.request.body
+    await new Promise(resolve => {
+        let result = userService.editUserInfo(userId,info)
+        resolve(result)
+    }).then(data => {
+        ctx.body = data
+    })
+}
+
+/**
+ * 用户修改密码
+ */
+exports.editUserPassword = async (ctx) => {
+    if(ctx.session.isNew){
+        return ctx.body = {
+            status: 0,
+            data: "未登录"
+        }
+    }
+    const userId = ctx.session.uid
+    //取出参数
+    const pwd = ctx.request.body
+    await new Promise(resolve => {
+        let result = userService.editUserPassword(userId,pwd)
+        resolve(result)
+    }).then(data => {
+        ctx.body = data
+    })
+}
+
+
 
 /**
  * 保持登录状态

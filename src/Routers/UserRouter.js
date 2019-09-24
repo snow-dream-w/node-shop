@@ -19,10 +19,16 @@ router.post("/user/login",user.loginUserAccount);
 router.post("/user/register",user.registerUserAccount);
 
 //获取个人信息
-router.get("/user/person/:id",user.keepLogin,user.getUserInfo)
+router.get("/user/person/:id",user.keepLogin,user.getUserInfo);
 
 //上传个人头像
-router.post("/user/upload",upload.single('file'),user.uploadUserAvatar)
+router.post("/user/upload",upload.single('file'),user.uploadUserAvatar);
+
+//编辑基本资料
+router.post("/user/edit/info",user.keepLogin,user.editUserInfo);
+
+//修改密码
+router.post("/user/edit/password",user.keepLogin,user.editUserPassword);
 
 //退出登录
 router.get("/user/logout",user.keepLogin,user.logout);

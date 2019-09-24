@@ -6,6 +6,8 @@ const db = mongoose.createConnection('mongodb://qiankun:123456@47.94.162.87:2701
 mongoose.Promise = global.Promise;
 //取出Schema
 const Schema = mongoose.Schema;
+// findAndModify驱动即将被废弃，禁用
+mongoose.set('useFindAndModify', false);
 
 db.on('error',console.log.bind(console,'数据库连接失败'));
 db.on('open',()=>{
