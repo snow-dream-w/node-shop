@@ -11,6 +11,7 @@
 <body>
     <button onclick="register()">注册</button>
     <button onclick="login()">登录</button>
+    <button onclick="person()">获取个人信息</button>
     <button onclick="logout()">退出登录</button>
     <script src="./juqery.js"></script>
     <script>
@@ -35,6 +36,15 @@
                     telephone: '17865579761',
                     password: 'qiankun1995'
                 },
+                success(result) {
+                    console.log(result);
+                }
+            })
+        }
+        function person() {
+            $.ajax({
+                url: "/user/person/17865579761",
+                method: "get",
                 success(result) {
                     console.log(result);
                 }

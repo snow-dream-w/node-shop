@@ -7,7 +7,7 @@ module.exports = class UserDao {
      * @param {*注册手机号} userId 
      * @param {*用户密码} password 
      */
-    async loginAccount(userId, password) {
+    async loginUserAccount(userId, password) {
         let result = {
             status: 0,
             data: "请重新尝试"
@@ -34,7 +34,7 @@ module.exports = class UserDao {
      * 注册
      * @param {*用户信息对象} user 
      */
-    async registerAccount(user) {
+    async registerUserAccount(user) {
         let result = {
             status: 0,
             data: null
@@ -58,7 +58,7 @@ module.exports = class UserDao {
     async isExistAccount(userId) {
         let result = {
             status: 0,
-            data: null
+            data: {}
         }
         await User.find({ telephone: userId }, async (err, data) => {
             if (err) {
@@ -69,6 +69,49 @@ module.exports = class UserDao {
                 } else {
                     result.status = 1
                 }
+            }
+        })
+        return result
+    }
+    /**
+     * 获取用户信息
+     * @param {*用户注册手机号} userId 
+     */
+    async getUserInfo(userId) {
+        let result = {
+            status: 0,
+            data: {}
+        }
+        await User.findOne({telephone: userId},{_id:0,password:0,perference:0}, (err, data) => {
+            if(err){
+                result.data = err
+            } else {
+                if(data){
+                    result.status = 1
+                    result.data = data
+                } else {
+                    result.data = "未查询到信息，请重新尝试"
+                } 
+            }
+        })
+        return result
+    }
+    /**
+     * 保存头像上传路径
+     * @param {*用户注册手机号} userId
+     * @param {*头像路径} avatarPath 
+     */
+    async uploadUserAvatar(userId,avatarPath){
+        let result = {
+            status: 0,
+            data: {}
+        }
+        await User.updateOne({telephone: userId},{'$set': {avatar: avatarPath}},(err,data) => {
+            if(err){
+                result.data = err
+            } else {
+                result.status = 1
+                result.data = data
             }
         })
         return result

@@ -3,6 +3,7 @@ const fs = require('fs')
 const {join} = require('path')
 
 const user = require('../Controller/UserController')
+const upload = require('../Utils/upload')
 
 const router = new Router
 
@@ -12,10 +13,16 @@ router.get("/", async (ctx) => {
 });
 
 //登录
-router.post("/user/login",user.loginAccount);
+router.post("/user/login",user.loginUserAccount);
 
 //注册
-router.post("/user/register",user.register);
+router.post("/user/register",user.registerUserAccount);
+
+//获取个人信息
+router.get("/user/person/:id",user.keepLogin,user.getUserInfo)
+
+//上传个人头像
+router.post("/user/upload",upload.single('file'),user.uploadUserAvatar)
 
 //退出登录
 router.get("/user/logout",user.keepLogin,user.logout);

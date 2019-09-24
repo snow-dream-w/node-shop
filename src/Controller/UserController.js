@@ -7,7 +7,7 @@ const encrypt = require("../Utils/encrypt")
 /**
  * 用户注册
  */
-exports.register = async (ctx) => {
+exports.registerUserAccount = async (ctx) => {
     //接收参数
     const user = ctx.request.body
 
@@ -21,7 +21,7 @@ exports.register = async (ctx) => {
 
     //发起保存请求
     await new Promise(async (resolve, reject) => {
-        let result = await userService.registerAccount(user)
+        let result = await userService.registerUserAccount(user)
         return resolve(result)
     }).then(result => {
         ctx.body = result
@@ -31,14 +31,14 @@ exports.register = async (ctx) => {
 /**
  * 用户登录
  */
-exports.loginAccount = async (ctx) => {
+exports.loginUserAccount = async (ctx) => {
     //取参数
     const user = ctx.request.body
     const userId = user.telephone
     const password = user.password
     //查找数据
     await new Promise(async (resolve, reject) => {
-        let result = await userService.loginAccount(userId,password)
+        let result = await userService.loginUserAccount(userId,password)
         if(result.status === 0){
             return reject(result.data)
         }
@@ -84,6 +84,48 @@ exports.loginAccount = async (ctx) => {
             status: 0,
             data: err
         }
+    })
+}
+
+/**
+ * 获取用户信息
+ */
+exports.getUserInfo = async (ctx) => {
+    let result = {
+        status: 0,
+        data: "未登录"
+    }
+    if(ctx.session.isNew){
+        return ctx.body = result
+    }
+    //获取参数
+    const userId = ctx.params.id
+    await new Promise((resolve) => {
+        let result = userService.getUserInfo(userId)
+        resolve(result)
+    }).then(data => {
+        ctx.body = data
+    })
+}
+
+/**
+ * 上传头像
+ */
+exports.uploadUserAvatar = async (ctx) => {
+    // if(ctx.session.isNew){
+    //     return ctx.body = {
+    //         status: 0,
+    //         data: "未登录"
+    //     }
+    // }
+    // const userId = ctx.session.uid
+    const userId = '17865579761'
+    const avatarPath = '/avatar/' + ctx.req.file.filename
+    await new Promise(resolve => {
+        let result = userService.uploadUserAvatar(userId,avatarPath)
+        resolve(result)
+    }).then(data => {
+        ctx.body = data
     })
 }
 

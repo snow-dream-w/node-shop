@@ -11,20 +11,35 @@ module.exports = class UserService{
      * @param {*注册手机号} userId 
      * @param {*用户密码} password 
      */
-    async loginAccount(userId, password) {
-        let result = await this.userDao.loginAccount(userId, password)
+    async loginUserAccount(userId, password) {
+        let result = await this.userDao.loginUserAccount(userId, password)
         return result
     }
     /**
      * 注册
      * @param {*用户信息对象} user 
      */
-    async registerAccount(user) {
+    async registerUserAccount(user) {
         let result = {}
         result = await this.userDao.isExistAccount(user.telephone)
         if(result.status === 1){
-            result = await this.userDao.registerAccount(user)
+            result = await this.userDao.registerUserAccount(user)
         }
         return result
+    }
+    /**
+     * 获取用户信息
+     * @param {*用户注册手机号} userId 
+     */
+    async getUserInfo(userId){
+        return this.userDao.getUserInfo(userId)
+    }
+    /**
+     * 保存头像上传路径
+     * @param {*用户注册手机号} userId
+     * @param {*头像路径} avatarPath 
+     */
+    async uploadUserAvatar(userId,avatarPath){
+        return this.userDao.uploadUserAvatar(userId,avatarPath)
     }
 }
