@@ -7,8 +7,10 @@ const compress = require('koa-compress');
 const session = require('koa-session');
 const cors = require('@koa/cors');
 
+//导入路由
 const userRouter = require('./src/Routers/UserRouter');
 const goodsRouter = require('./src/Routers/GoodsRouter');
+const addressRouter = require('./src/Routers/AddressRouter');
 
 const app = new Koa;
 
@@ -41,6 +43,7 @@ app.use(static(join(__dirname, "public")))
 //配置路由,要放在配置静态资源后
 app.use(userRouter.routes()).use(userRouter.allowedMethods())
 app.use(goodsRouter.routes()).use(goodsRouter.allowedMethods())
+app.use(addressRouter.routes()).use(addressRouter.allowedMethods())
 
 //注册日志模块，控制台打印日志
 app.use(logger())

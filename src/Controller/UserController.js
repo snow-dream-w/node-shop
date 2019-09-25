@@ -46,6 +46,14 @@ exports.loginUserAccount = async (ctx) => {
     }).then((data) => {
         //koa 2.x 不支持中文cookie
         //给客户端设置cookie
+        ctx.cookies.set("_id", data._id, {
+            domin: "localhost",
+            path: "/",
+            maxAge: 36e5,
+            httpOnly: false, //true不让客户端访问这个cookie
+            overwrite: false,
+            // signed: false//默认是true
+        });
         ctx.cookies.set("uid", data.telephone, {
             domin: "localhost",
             path: "/",
@@ -70,11 +78,11 @@ exports.loginUserAccount = async (ctx) => {
             overwrite: false,
             // signed: false
         });
-
         //后台设置session
         ctx.session = {
             uid: data.telephone,
-            role: data.role
+            role: data.role,
+            id: data._id
         }
         ctx.body = {
             status: 1,
@@ -181,9 +189,9 @@ exports.keepLogin = async (ctx, next) => {
     if (ctx.session.isNew) {
         if (ctx.cookies.get("username")) {
             ctx.session = {
-                username: ctx.cookies.get('username'),
                 uid: ctx.cookies.get('uid'),
-                role: ctx.cookies.get('role')
+                role: ctx.cookies.get('role'),
+                _id: ctx.cookies.get('_id')
             }
         }
     }
@@ -195,6 +203,9 @@ exports.keepLogin = async (ctx, next) => {
  */
 exports.logout = async (ctx) => {
     ctx.session = null;
+    ctx.cookies.set("_id", null, {
+        maxAge: 0
+    })
     ctx.cookies.set("username", null, {
         maxAge: 0
     })

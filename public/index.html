@@ -6,19 +6,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <style>
+        button{
+            margin-top: 10px;
+            line-height: 25px;
+            background: rgb(4, 130, 189);
+            color: #fff;
+        }
+    </style>
 </head>
 
 <body>
+    <!-- 陈乾坤 -->
+    <h2>陈乾坤</h2>
     <button onclick="register()">注册</button>
-    <button onclick="login()">登录</button>
     <button onclick="person()">获取个人信息</button>
     <button onclick="edit()">编辑个人信息</button>
-    <button onclick="changepassword()">修改密码</button>
+    <button onclick="changepassword()">修改密码</button><br>
+    <button onclick="addAddress()">添加收货地址</button>
+    <button onclick="queryAddress()">查看收货地址</button>
+    <button onclick="changeAddress()">修改收货地址</button>
+    <hr/>
+    <!-- 公共模块 -->
+    <h2>公共模块</h2>
+    <button onclick="login()">登录</button>
     <button onclick="logout()">退出登录</button>
+    <hr/>
+    <!-- 王月月 -->
+    <h2>王月</h2>
     <button onclick="addGoods()">商品上架 </button>
     <button onclick="updateGoods()">修改商品信息</button>
     <button onclick="getGoods()">获取商品信息</button>
     <script src="./juqery.js"></script>
+    <script src="./qiankun.js"></script>
+    <script src="./wangyue.js"></script>
     <script>
         function login() {
             $.ajax({
@@ -27,55 +48,6 @@
                 data: {
                     telephone: '17865579761',
                     password: 'qiankun1995'
-                },
-                success(result) {
-                    console.log(result);
-                }
-            })
-        }
-        function changepassword() {
-            $.ajax({
-                url: "/user/edit/password",
-                method: "post",
-                data: {
-                    oldPassword: 'qiankun19950629',
-                    newPassword: 'qiankun1995'
-                },
-                success(result) {
-                    console.log(result);
-                }
-            })
-        }
-        function register() {
-            $.ajax({
-                url: "/user/register",
-                method: "post",
-                data: {
-                    telephone: '17865579761',
-                    password: 'qiankun1995',
-                    sex: '男'
-                },
-                success(result) {
-                    console.log(result);
-                }
-            })
-        }
-        function person() {
-            $.ajax({
-                url: "/user/person/17865579761",
-                method: "get",
-                success(result) {
-                    console.log(result);
-                }
-            })
-        }
-        function edit() {
-            $.ajax({
-                url: "/user/edit/info",
-                method: "post",
-                data: {
-                    name: '吾忆那年秋',
-                    sex: '男'
                 },
                 success(result) {
                     console.log(result);
@@ -93,70 +65,7 @@
                 }
             })
         }
-        function addGoods(){
-            $.ajax({
-                url: "/goods/shelf",
-                method: "post",
-                data: {
-                    name: "紫薯",
-                    description: "123",
-                    types: "1234",
-                    types:"主食",
-                    type:"面类",
-                    price:12.0,
-                    specification:"20",
-                    sales:0,
-                    unit:"斤",
-                    discount:{
-                        status:1,
-                        percent:7
-                    },
-                    inventoryNum:129,
-                    commentNum:0,
-                    status:1
-                },
-                success(result) {
-                    console.log(result);
-                }
-            })
-        }
-        function updateGoods(){
-            $.ajax({
-                url: "/goods/update",
-                method: "post",
-                data: {
-                    _id:"5d8acaecbdaa255658927c0d",
-                    name: "面",
-                    description: "23",
-                    types: "1234",
-                    types:"主食",
-                    type:"面类",
-                    price:12.0,
-                    specification:"20",
-                    sales:0,
-                    unit:"斤",
-                    discount:{
-                        status:1,
-                        percent:9
-                    },
-                    inventoryNum:129,
-                    commentNum:0,
-                    status:1
-                },
-                success(result) {
-                    console.log(result);
-                }
-            })
-        }
-        function getGoods(){
-            $.ajax({
-                url: "/goods/query",
-                method: "post",
-                success(result) {
-                    console.log(result);
-                }
-            })
-        }
+        
     </script>
 </body>
 
