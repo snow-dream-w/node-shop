@@ -23,7 +23,7 @@ module.exports = class UserService{
         let result = {}
         result = await this.userDao.isExistAccount(user.telephone)
         if(result.status === 1){
-            result = await this.userDao.registerUserAccount(user)
+            result = this.userDao.registerUserAccount(user)
         }
         return result
     }

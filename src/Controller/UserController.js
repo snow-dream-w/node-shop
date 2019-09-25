@@ -20,8 +20,8 @@ exports.registerUserAccount = async (ctx) => {
     user['busNum'] = 0
 
     //发起保存请求
-    await new Promise(async (resolve, reject) => {
-        let result = await userService.registerUserAccount(user)
+    await new Promise(function(resolve) {
+        let result = userService.registerUserAccount(user)
         return resolve(result)
     }).then(result => {
         ctx.body = result

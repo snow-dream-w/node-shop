@@ -1,5 +1,6 @@
 const User = require('../Models/UserModel');
 const encrypt = require("../Utils/encrypt")
+const assert = require("assert")
 
 module.exports = class UserDao {
     /**
@@ -60,7 +61,7 @@ module.exports = class UserDao {
             status: 0,
             data: {}
         }
-        await User.find({ telephone: userId }, async (err, data) => {
+        await User.find({ telephone: userId }, (err, data) => {
             if (err) {
                 result.data = err
             } else {
@@ -82,16 +83,16 @@ module.exports = class UserDao {
             status: 0,
             data: {}
         }
-        await User.findOne({telephone: userId},{_id:0,password:0,perference:0}, (err, data) => {
-            if(err){
+        await User.findOne({ telephone: userId }, { _id: 0, password: 0, perference: 0 }, (err, data) => {
+            if (err) {
                 result.data = err
             } else {
-                if(data){
+                if (data) {
                     result.status = 1
                     result.data = data
                 } else {
                     result.data = "未查询到信息，请重新尝试"
-                } 
+                }
             }
         })
         return result
@@ -101,13 +102,13 @@ module.exports = class UserDao {
      * @param {*用户注册手机号} userId
      * @param {*头像路径} avatarPath 
      */
-    async uploadUserAvatar(userId,avatarPath){
+    async uploadUserAvatar(userId, avatarPath) {
         let result = {
             status: 0,
             data: {}
         }
-        await User.updateOne({telephone: userId},{'$set': {avatar: avatarPath}},(err,data) => {
-            if(err){
+        await User.updateOne({ telephone: userId }, { '$set': { avatar: avatarPath } }, (err, data) => {
+            if (err) {
                 result.data = err
             } else {
                 result.status = 1
@@ -121,18 +122,21 @@ module.exports = class UserDao {
      * @param {*用户注册手机} userId 
      * @param {*待修改信息对象，包括性别sex和昵称name} info 
      */
-    async editUserInfo(userId,info){
+    async editUserInfo(userId, info) {
         let result = {
             status: 0,
             data: {}
         }
-        await User.findOneAndUpdate({telephone: userId}, {$set: info},{new: true}, (err,data) => {
-            if(err){
+        await User.findOneAndUpdate({ telephone: userId }, { $set: info }, { runValidators: true, new: true }, (err, data) => {
+            if (err) {
                 result.data = err
             } else {
                 result.status = 1
                 result.data = data
-            }
+            }          
+        }).catch(err => {
+            assert.equal(err.errors.sex.name,
+                'ValidatorError');
         })
         return result
     }
@@ -141,13 +145,13 @@ module.exports = class UserDao {
      * @param {*用户注册手机号} userId 
      * @param {*新密码} newPassword 
      */
-    async editUserPassword(userId,newPassword){
+    async editUserPassword(userId, newPassword) {
         let result = {
             status: 0,
             data: {}
         }
-        await User.updateOne({telephone: userId},{$set: {password: encrypt(newPassword)}},(err,data) => {
-            if(err){
+        await User.updateOne({ telephone: userId }, { $set: { password: encrypt(newPassword) } }, (err, data) => {
+            if (err) {
                 result.data = err
             } else {
                 result.status = 1
