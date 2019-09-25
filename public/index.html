@@ -15,6 +15,9 @@
     <button onclick="edit()">编辑个人信息</button>
     <button onclick="changepassword()">修改密码</button>
     <button onclick="logout()">退出登录</button>
+    <button onclick="addGoods()">商品上架 </button>
+    <button onclick="updateGoods()">修改商品信息</button>
+    <button onclick="getGoods()">获取商品信息</button>
     <script src="./juqery.js"></script>
     <script>
         function login() {
@@ -87,6 +90,70 @@
                     if(result.status === 1){
                         console.log('退出成功');
                     }
+                }
+            })
+        }
+        function addGoods(){
+            $.ajax({
+                url: "/goods/shelf",
+                method: "post",
+                data: {
+                    name: "紫薯",
+                    description: "123",
+                    types: "1234",
+                    types:"主食",
+                    type:"面类",
+                    price:12.0,
+                    specification:"20",
+                    sales:0,
+                    unit:"斤",
+                    discount:{
+                        status:1,
+                        percent:7
+                    },
+                    inventoryNum:129,
+                    commentNum:0,
+                    status:1
+                },
+                success(result) {
+                    console.log(result);
+                }
+            })
+        }
+        function updateGoods(){
+            $.ajax({
+                url: "/goods/update",
+                method: "post",
+                data: {
+                    _id:"5d8acaecbdaa255658927c0d",
+                    name: "面",
+                    description: "23",
+                    types: "1234",
+                    types:"主食",
+                    type:"面类",
+                    price:12.0,
+                    specification:"20",
+                    sales:0,
+                    unit:"斤",
+                    discount:{
+                        status:1,
+                        percent:9
+                    },
+                    inventoryNum:129,
+                    commentNum:0,
+                    status:1
+                },
+                success(result) {
+                    console.log(result);
+                }
+            })
+        }
+        function getGoods(){
+            $.ajax({
+                url: "/goods/query",
+                method: "post",
+                success(result) {
+                    console.log(result);
                 }
             })
         }
