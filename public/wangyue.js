@@ -1,9 +1,9 @@
 function addGoods(){
     $.ajax({
-        url: "/goods/shelf",
+        url: "/goods/add",
         method: "post",
         data: {
-            name: "紫薯",
+            name: "紫薯米",
             description: "123",
             types: "1234",
             types:"主食",
@@ -31,8 +31,8 @@ function updateGoods(){
         method: "post",
         data: {
             _id:"5d8acaecbdaa255658927c0d",
-            name: "面",
-            description: "23",
+            name: "面条",
+            description: "1123",
             types: "1234",
             types:"主食",
             type:"面类",
@@ -55,8 +55,61 @@ function updateGoods(){
 }
 function getGoods(){
     $.ajax({
-        url: "/goods/query",
+        url: "/goods/query/2",
+        method: "get",
+        success(result) {
+            console.log(result);
+        }
+    })
+}
+function shelfGoods() {
+    $.ajax({
+        url: "/goods/shelves",
         method: "post",
+        data:{
+            _id:"5d8bfff3b0234a4028088e94",
+        },
+        success(result) {
+            console.log(result);
+        }
+    })
+}
+function GoodsDetail() {
+    $.ajax({
+        url: "/goods/goodsDetail/5d8bfff3b0234a4028088e94",
+        method: "get",
+        success(result) {
+            console.log(result);
+        }
+    })
+}
+function orderPaymentedInfo() {
+    $.ajax({
+        url: "/orders/orderInfo/2",
+        method: "get",
+        success(result) {
+            console.log(result);
+        }
+    })
+}
+function orderCompletedInfo() {
+    $.ajax({
+        url: "/orders/orderInfo/3",
+        method: "get",
+        success(result) {
+            console.log(result);
+        }
+    })
+}
+function addComment() {
+    $.ajax({
+        url: "/comment/add",
+        method: "post",
+        data: {
+            content:"这是评论内容",
+            grade:5,
+            goodsId:"5d8bfff3b0234a4028088e94"
+        },
         success(result) {
             console.log(result);
         }

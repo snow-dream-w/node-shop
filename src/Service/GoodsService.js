@@ -7,27 +7,24 @@ module.exports = class GoodsService {
         this.goodsDao = goodsDao;
     }
 
-    /**
+   /**
     * 商品上架
-    * @param {*商品信息对象} goods：
-    * name: String 商品姓名 
-    *description: String 描述
-    *images: []  商品图像
-    *types: String  一级分类
-    *type: String  二级分类
-    *price: float  单价
-    *specification: String 规格
-    *sales: int  销量
-    *unit: String  单位
-    *discount：{
-        *status: int 折扣状态
-        *percent: float	 折扣比例
-    }
-    *inventoryNum: int 库存
-    *commentNum: int 评论数量
-    *status: int 状态
-    *createdAt: String 创建时间
-    *updatedAt: String 更新时间
+    * @param {*商品信息对象} goods包括以下内容
+    * {*商品姓名} name
+    * {*商品描述} description
+    * {*商品图像} images
+    * {*一级分类} types
+    * {*二级分类} type
+    * {*单价} price
+    * {*规格} specification
+    * {*销量} sales
+    * {*单位} unit
+    * {*折扣} discount
+    * {*折扣状态} status
+    * {*折扣比例} percent
+    * {*库存} inventoryNum
+    * {*评论数量} commentNum
+    * {*状态} status
     */
     async addGoodsInfo(goods) {
         let result = {}
@@ -37,10 +34,12 @@ module.exports = class GoodsService {
         }
         return result
     }
-    /**
-     * 修改商品信息
-     */
-    async updateGoodsInfo(goodsId, goods) {
+   /**
+    * 修改商品信息
+    * @param {*商品id} goodsId 
+    * @param {*商品信息对象} goods 
+    */ 
+   async updateGoodsInfo(goodsId, goods) {
         let result = {}
         result = await this.goodsDao.isGoodExists(goods.name)
         if (result.status === 1) {
@@ -48,11 +47,30 @@ module.exports = class GoodsService {
         }
         return result
     }
-    /**
-     * 获取商品信息
-     */
-    async getGoodsInfo() {
-        return await this.goodsDao.getGoodsInfo()
+  /**
+   * 获取商品信息列表
+   * @param {*获取商品数量} limit 
+   */  
+  async getGoodsInfo(limit) {
+        return await this.goodsDao.getGoodsInfo(limit)
     }
-
+   /**
+    * 商品下架
+    * @param {*商品id} goodsId 
+    */
+    async shelfGoodsInfo(goodsId){
+        let result = {}
+        result = await this.goodsDao.shelfGoodsInfo(goodsId)
+        if(result.status === 1){
+            result = await this.goodsDao.updateCarStatus(goodsId)
+        }
+        return result
+    }
+    /**
+     * 获取商品详情
+     * @param {*商品id} goodsId 
+     */
+    async getGoodsDetail(goodsId) {
+        return await this.goodsDao.getGoodsDetail(goodsId)
+    }
 }

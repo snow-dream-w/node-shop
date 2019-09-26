@@ -10,13 +10,6 @@ exports.addGoodsInfo = async (ctx) => {
     //接收参数
     const goods = ctx.request.body
 
-    //session不存在
-    if (ctx.session.isNew) {
-        return ctx.body = {
-            status: 0,
-            msg: "未登录"
-        }
-    }
     //发起保存请求
     await new Promise(async (resolve) => {
         let result = await goodsService.addGoodsInfo(goods)
@@ -33,13 +26,6 @@ exports.updateGoodsInfo = async (ctx) => {
     const goods = ctx.request.body
     const goodsId = goods._id
 
-    //session不存在
-    if (ctx.session.isNew) {
-        return ctx.body = {
-            status: 0,
-            msg: "未登录"
-        }
-    }
     //发起保存请求
     await new Promise(async (resolve) => {
         let result = await goodsService.updateGoodsInfo(goodsId, goods)
@@ -49,24 +35,44 @@ exports.updateGoodsInfo = async (ctx) => {
     })
 }
 /**
- * 获取商品信息
+ * 获取商品信息列表
  */
 exports.getGoodsInfo = async (ctx) => {
-
-    //session不存在
-    if (ctx.session.isNew) {
-        return ctx.body = {
-            status: 0,
-            msg: "未登录"
-        }
-    }
+    let limit = new Number(ctx.params.limit)
 
     await new Promise(async (resolve) => {
-        let result = await goodsService.getGoodsInfo()
+        let result = await goodsService.getGoodsInfo(limit)
         return resolve(result)
     }).then(result => {
         ctx.body = result
     })
+}
+/**
+ * 商品下架
+ */
+exports.shelfGoodsInfo = async (ctx) =>{
+    //接受参数
+    const goods = ctx.request.body
+    const goodsId = goods._id
 
+    await new Promise(async (resolve) => {
+        let result = await goodsService.shelfGoodsInfo(goodsId)
+        return resolve(result)
+    }).then(result =>{
+        ctx.body = result
+    })
+}
+/**
+ * 获取商品详情
+ */
+exports.getGoodsDetail = async (ctx) => {
+    //接受参数
+    const goodsId = ctx.params.id;
 
+    await new Promise(async (resolve) => {
+        let result = await goodsService.getGoodsDetail(goodsId)
+        return resolve(result)
+    }).then(result => {
+        ctx.body = result
+    })
 }
