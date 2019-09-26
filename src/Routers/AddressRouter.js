@@ -18,10 +18,10 @@ router.get("/address/detail/:id",user.keepLogin, address.getAddressDetail);
 router.post("/address/update",user.keepLogin, address.editAddressInfo);
 
 //删除收货地址
-router.del("/address/delete",user.keepLogin)
+router.del("/address/delete/:id",user.keepLogin, address.delReceivingAddress)
 
 //默认收货地址
-// router.del("/address/default",user.keepLogin)
+router.post("/address/default",user.keepLogin, address.defaultReceivingAddress)
 
 
 module.exports = router

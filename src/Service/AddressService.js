@@ -37,4 +37,19 @@ module.exports = class AddressService {
     async editAddressInfo(addressInfo) {
         return await this.addressDao.editAddressInfo(addressInfo)
     }
+    /**
+     * 删除收货地址
+     * @param {*地址ID} addressId
+     */
+    async delReceivingAddress(addressId) {
+        return await this.addressDao.delReceivingAddress(addressId)
+    }
+    /**
+     * 设置默认地址
+     * @param {*用户_id} userId 
+     * @param {*地址_id} addressId 
+     */
+    async defaultReceivingAddress(userId, addressId) {
+        return await this.addressDao.defaultReceivingAddress(userId, addressId)
+    }
 }

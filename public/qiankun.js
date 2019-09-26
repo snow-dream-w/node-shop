@@ -1,3 +1,24 @@
+function delAddress() {
+    $.ajax({
+        url: "/address/delete/5d8ca9f763636a4f8ca0cdfa",
+        method: "delete",
+        success(result) {
+            console.log(result);
+        }
+    })
+}
+function defaultAddress() {
+    $.ajax({
+        url: "/address/default",
+        method: "post",
+        data: {
+            _id: '5d8ca9df63636a4f8ca0cdf8'
+        },
+        success(result) {
+            console.log(result);
+        }
+    })
+}
 function queryAddress() {
     $.ajax({
         url: "/address/get/2",

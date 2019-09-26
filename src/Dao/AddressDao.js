@@ -86,4 +86,63 @@ module.exports = class AddressDao {
             })
         return result
     }
+    /**
+     * 删除收货地址
+     * @param {*地址ID} addressInfo 
+     */
+    async delReceivingAddress(addressId) {
+        let result = {
+            status: 0,
+            data: null
+        }
+        await Address.findOne({ _id: addressId }, { defaultAddress: 1 })
+            .then(data => {
+                if(data.defaultAddress === 1){
+                    result.status = 1
+                }  
+            })
+        if(result.status === 1){
+            result.status = 0
+            result.data = "默认地址不可删除"
+            return result
+        }
+        await Address.deleteOne({ _id: addressId })
+            .then(data => {
+                result.status = 1
+                result.data = data
+            })
+            .catch(err => {
+                result.status = 0
+                result.data = err
+            })
+        return result
+    }
+    /**
+     * 设置默认地址
+     * @param {*用户_id} userId 
+     * @param {*地址_id} addressId 
+     */
+    async defaultReceivingAddress(userId, addressId) {
+        let result = {
+            status: 0,
+            data: null
+        }
+        await Address.updateMany({ userId: userId }, { $set: { defaultAddress: 0 } })
+            .then(data => {
+                result.status = 1
+                result.data = data
+            }).catch(err => {
+                result.data = err
+            })
+        if (result.status === 1) {
+            await Address.updateOne({ _id: addressId }, { $set: { defaultAddress: 1 } })
+                .then(data => {
+                    result.data = data
+                }).catch(err => {
+                    result.status = 1
+                    result.data = err
+                })
+        }
+        return result
+    }
 }

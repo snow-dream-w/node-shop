@@ -53,3 +53,28 @@ exports.editAddressInfo = async (ctx) => {
         ctx.body = data
     })
 }
+/**
+ * 删除收货地址
+ */
+exports.delReceivingAddress = async (ctx) => {
+    let addressId = ctx.params.id
+    await new Promise(resolve => {
+        let result = addressService.delReceivingAddress(addressId)
+        resolve(result)
+    }).then(data => {
+        ctx.body = data
+    })
+}
+/**
+ * 设置默认收货地址
+ */
+exports.defaultReceivingAddress = async (ctx) => {
+    let addressId = ctx.request.body._id
+    let userId = ctx.session.id
+    await new Promise(resolve => {
+        let result = addressService.defaultReceivingAddress(userId, addressId)
+        resolve(result)
+    }).then(data => {
+        ctx.body = data
+    })
+}
