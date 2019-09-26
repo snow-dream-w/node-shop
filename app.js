@@ -50,4 +50,34 @@ app.use(logger())
 
 app.listen('3000',()=>{
     console.log('项目启动成功');
-})
+});
+
+// 创建管理员
+(async function admin(){
+    const User = require('./src/Models/UserModel')
+    const encrypt = require('./src/Utils/encrypt')
+    await User.find({telephone: "admin"})
+        .then(data => {
+            if(data.length === 0) {
+                new User({
+                    telephone: '15824795534',
+                    name: '系统管理员',
+                    password: encrypt('123456'),
+                    role: 666
+                }).save()
+                .then(data => {
+                    User.updateOne({telephone: '15824795534'},{$set: {telephone: 'admin'}},{new: true},(err,data)=>{
+                        if(err){
+                            console.log("管理员信息检查失败");
+                        }else{
+                            console.log("管理员信息创建成功");
+                        }
+                    })
+                }).catch(err => {
+                    console.log("管理员信息检查失败");
+                })
+            } else {
+                console.log('管理员已存在');
+            }
+        })
+})()

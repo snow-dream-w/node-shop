@@ -100,13 +100,6 @@ exports.loginUserAccount = async (ctx) => {
  * 获取用户信息
  */
 exports.getUserInfo = async (ctx) => {
-    let result = {
-        status: 0,
-        data: "未登录"
-    }
-    if(ctx.session.isNew){
-        return ctx.body = result
-    }
     //获取参数
     const userId = ctx.params.id
     await new Promise((resolve) => {
@@ -121,12 +114,6 @@ exports.getUserInfo = async (ctx) => {
  * 上传头像
  */
 exports.uploadUserAvatar = async (ctx) => {
-    // if(ctx.session.isNew){
-    //     return ctx.body = {
-    //         status: 0,
-    //         data: "未登录"
-    //     }
-    // }
     // const userId = ctx.session.uid
     const userId = '17865579761'
     const avatarPath = '/avatar/' + ctx.req.file.filename
@@ -142,12 +129,6 @@ exports.uploadUserAvatar = async (ctx) => {
  * 编辑用户信息
  */
 exports.editUserInfo = async (ctx) => {
-    if(ctx.session.isNew){
-        return ctx.body = {
-            status: 0,
-            data: "未登录"
-        }
-    }
     const userId = ctx.session.uid
     //取出参数
     const info = ctx.request.body
@@ -163,12 +144,6 @@ exports.editUserInfo = async (ctx) => {
  * 用户修改密码
  */
 exports.editUserPassword = async (ctx) => {
-    if(ctx.session.isNew){
-        return ctx.body = {
-            status: 0,
-            data: "未登录"
-        }
-    }
     const userId = ctx.session.uid
     //取出参数
     const pwd = ctx.request.body
@@ -191,7 +166,12 @@ exports.keepLogin = async (ctx, next) => {
             ctx.session = {
                 uid: ctx.cookies.get('uid'),
                 role: ctx.cookies.get('role'),
-                _id: ctx.cookies.get('_id')
+                id: ctx.cookies.get('id')
+            }
+        } else{
+            return ctx.body = {
+                status: 0,
+                data: "未登录"
             }
         }
     }

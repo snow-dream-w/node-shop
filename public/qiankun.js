@@ -1,6 +1,15 @@
 function queryAddress() {
     $.ajax({
-        url: "/address/get",
+        url: "/address/get/2",
+        method: "get",
+        success(result) {
+            console.log(result);
+        }
+    })
+}
+function detailAddress() {
+    $.ajax({
+        url: "/address/detail/5d8c31719112491b2c6e2524",
         method: "get",
         success(result) {
             console.log(result);
@@ -12,7 +21,14 @@ function changeAddress() {
         url: "/address/update",
         method: "post",
         data: {
-
+            _id: '5d8c31719112491b2c6e2524',
+            name: '陈乾坤',
+            telephone: '17865579761',
+            post: '654321',
+            address: {
+                area: '山东省 烟台市 莱山区',
+                details: '山东工商学院西校区'
+            }
         },
         success(result) {
             console.log(result);

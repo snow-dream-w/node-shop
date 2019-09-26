@@ -13,10 +13,8 @@ module.exports = class UserDao {
             status: 0,
             data: "请重新尝试"
         }
-        await User.find({ telephone: userId }, (err, data) => {
-            if (err) {
-                result.data = err
-            } else {
+        await User.find({ telephone: userId })
+            .then(data => {
                 if (data.length !== 0) {
                     if (data[0].password === encrypt(password)) {
                         result.status = 1
@@ -27,8 +25,9 @@ module.exports = class UserDao {
                 } else {
                     result.data = "账号不存在"
                 }
-            }
-        })
+            }).catch(err => {
+                result.data = err
+            })
         return result
     }
     /**
@@ -61,17 +60,16 @@ module.exports = class UserDao {
             status: 0,
             data: {}
         }
-        await User.find({ telephone: userId }, (err, data) => {
-            if (err) {
-                result.data = err
-            } else {
+        await User.find({ telephone: userId })
+            .then(data => {
                 if (data.length !== 0) {
                     result.data = "用户名已存在"
                 } else {
                     result.status = 1
                 }
-            }
-        })
+            }).catch(err => {
+                result.data = err
+            })
         return result
     }
     /**
@@ -83,18 +81,17 @@ module.exports = class UserDao {
             status: 0,
             data: {}
         }
-        await User.findOne({ telephone: userId }, { _id: 0, password: 0, perference: 0 }, (err, data) => {
-            if (err) {
-                result.data = err
-            } else {
+        await User.findOne({ telephone: userId }, { _id: 0, password: 0, perference: 0 })
+            .then(data => {
                 if (data) {
                     result.status = 1
                     result.data = data
                 } else {
                     result.data = "未查询到信息，请重新尝试"
                 }
-            }
-        })
+            }).catch(err => {
+                result.data = err
+            })
         return result
     }
     /**
@@ -107,14 +104,13 @@ module.exports = class UserDao {
             status: 0,
             data: {}
         }
-        await User.updateOne({ telephone: userId }, { '$set': { avatar: avatarPath } }, (err, data) => {
-            if (err) {
-                result.data = err
-            } else {
+        await User.updateOne({ telephone: userId }, { '$set': { avatar: avatarPath } })
+            .then(data => {
                 result.status = 1
                 result.data = data
-            }
-        })
+            }).catch(err => {
+                result.data = err
+            })
         return result
     }
     /**
@@ -127,17 +123,13 @@ module.exports = class UserDao {
             status: 0,
             data: {}
         }
-        await User.findOneAndUpdate({ telephone: userId }, { $set: info }, { runValidators: true, new: true }, (err, data) => {
-            if (err) {
-                result.data = err
-            } else {
+        await User.findOneAndUpdate({ telephone: userId }, { $set: info }, { runValidators: true, new: true })
+            .then(data => {
                 result.status = 1
                 result.data = data
-            }          
-        }).catch(err => {
-            assert.equal(err.errors.sex.name,
-                'ValidatorError');
-        })
+            }).catch(err => {
+                result.data = err
+            })
         return result
     }
     /**
@@ -150,14 +142,13 @@ module.exports = class UserDao {
             status: 0,
             data: {}
         }
-        await User.updateOne({ telephone: userId }, { $set: { password: encrypt(newPassword) } }, (err, data) => {
-            if (err) {
-                result.data = err
-            } else {
+        await User.updateOne({ telephone: userId }, { $set: { password: encrypt(newPassword) } })
+            .then(data => {
                 result.status = 1
                 result.data = data
-            }
-        })
+            }).catch(err => {
+                result.data = err
+            })
         return result
     }
 }
