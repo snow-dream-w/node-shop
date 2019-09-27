@@ -13,7 +13,7 @@ const goodsRouter = require('./src/Routers/GoodsRouter');
 const addressRouter = require('./src/Routers/AddressRouter');
 const orderRouter = require('./src/Routers/OrderRouter');
 const commentRouter = require('./src/Routers/CommentRouter');
-// const answerRouter = require('./src/Routers/AnswerRouter');
+const answerRouter = require('./src/Routers/AnswerRouter');
 
 const app = new Koa;
 
@@ -49,7 +49,7 @@ app.use(goodsRouter.routes()).use(goodsRouter.allowedMethods())
 app.use(addressRouter.routes()).use(addressRouter.allowedMethods())
 app.use(orderRouter.routes()).use(orderRouter.allowedMethods())
 app.use(commentRouter.routes()).use(commentRouter.allowedMethods())
-// app.use(answerRouter.routes()).use(answerRouter.allowedMethods())
+app.use(answerRouter.routes()).use(answerRouter.allowedMethods())
 
 //注册日志模块，控制台打印日志
 app.use(logger())

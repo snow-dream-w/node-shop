@@ -74,7 +74,6 @@ module.exports = class GoodsDao {
             result.data = data
         }).catch(err => {
             console.log("数据不合法");
-
         })
         return result
     }

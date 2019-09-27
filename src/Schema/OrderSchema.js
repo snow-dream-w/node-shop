@@ -6,9 +6,21 @@ const OrderSchema = new Schema ({
         type: ObjectId,
         required: true
     },
-    addressId:{
-        type: ObjectId,
-        required: true
+    address: {
+        area: {
+            type: String,
+            required: true
+        },
+        details: {
+            type: String,
+            required: true,
+            validate: {
+                validator: function(v){
+                    return v.length < 100;
+                },
+                message: props => `${props.value} is not a valid,please enter 1-100 characters`
+            }
+        }
     },
     total:{
         type :Number,

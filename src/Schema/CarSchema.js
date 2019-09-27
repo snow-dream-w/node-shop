@@ -1,7 +1,7 @@
 const { Schema } = require('../Utils/connect');
 const ObjectId = Schema.Types.ObjectId;
 
-const GoodsSchema = new Schema ({
+const CarSchema = new Schema ({
     orderId:{
         type: ObjectId,
         required: true
@@ -12,7 +12,8 @@ const GoodsSchema = new Schema ({
     },
     goodsId:{
         type: ObjectId,
-        required: true
+        required: true,
+        ref: "goods"
     },
     status:{
         type:Number,
@@ -35,3 +36,4 @@ const GoodsSchema = new Schema ({
         }
     }
 })
+module.exports = CarSchema

@@ -19,5 +19,49 @@ exports.addCommentInfo = async(ctx) =>{
     }).then(result =>{
         ctx.body = result
     })
+}
+/**
+ * 追评
+ */
+exports.appendCommentInfo = async (ctx) => {
+    //接收参数
+    const userId = ctx.session.id
+    const appendComment = ctx.request.body
 
+    appendComment['usedId'] = userId
+
+    await new Promise (async (resolve) =>{
+        let result = await commentService.appendCommentInfo(appendComment)
+        return resolve(result)
+    }).then(result =>{
+        ctx.body = result
+    })
+}
+/**
+ * 点赞
+ */
+exports.clickNice = async(ctx) =>{
+    //接受参数
+    const comment = ctx.request.body
+    const commentId = comment._id
+
+    await new Promise (async (resolve) =>{
+        let result = await commentService.clickNice(commentId)
+        return resolve(result)
+    }).then(result =>{
+        ctx.body = result
+    })
+}
+/**
+ * 获取评论列表
+ */
+exports.getCommentInfo = async (ctx) =>{
+    let limit = new Number(ctx.params.limit)
+
+    await new Promise(async (resolve) =>{
+        let result = await commentService.getCommentInfo(limit)
+        return resolve(result)
+    }).then(result =>{
+        ctx.body = result
+    })
 }

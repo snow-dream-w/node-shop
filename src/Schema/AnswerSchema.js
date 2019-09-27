@@ -14,11 +14,17 @@ const AnswerSchema = new Schema({
     },
     userId:{
         type: ObjectId,
-        required: true
+        required: true,
+        ref:"users"
     },
     commentId:{
         type: ObjectId,
         required: true
+    },
+    selfId:{
+        type: ObjectId,
+        required: true,
+        ref:"users"
     },
     niceNum:{
         type:Number,

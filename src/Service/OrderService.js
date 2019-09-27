@@ -7,10 +7,17 @@ module.exports = class OrderService {
         this.orderDao = orderDao;
     }
     /**
-     * 
-     * @param {*} orderStatus 
+     * 查看订单
+     * @param {*订单状态} orderStatus 
      */
     async queryOrderByStatus(orderStatus) {
         return await this.orderDao.queryOrderByStatus(orderStatus)
+    }
+    /**
+     * 取消订单
+     * @param {*订单id} orderId 
+     */
+    async cancelOrderInfo(orderId) {
+        return await this.orderDao.queryOrderByStatus(orderId)
     }
 }

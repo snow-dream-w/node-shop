@@ -22,4 +22,18 @@ module.exports = class OrderDao{
         })
         return result
     }
+    async cancelOrderInfo(orderId) {
+        let result = {
+            status: 0,
+            data: "取消失败"
+        }
+        await Goods.updateOne({ _id: orderId }, { $set: { status: 4 } })
+            .then(data => {
+                result.status = 1
+                result.data = data
+            }).catch(err => {
+                result.data = err
+            })
+        return result
+    }
 }

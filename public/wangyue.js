@@ -115,3 +115,63 @@ function addComment() {
         }
     })
 }
+function appendComment() {
+    $.ajax({
+        url: "/comment/append",
+        method: "post",
+        data: {
+            againstContent:"这是追加的评论内容",
+            commentId:"5d8ca84ad736841e10209fe6"
+        },
+        success(result) {
+            console.log(result);
+        }
+    })
+}
+function clickNice() {
+    $.ajax({
+        url: "/comment/nice",
+        method: "post",
+        data: {
+           _id:"5d8ca84ad736841e10209fe6"
+        },
+        success(result) {
+            console.log(result);
+        }
+    })
+}
+function getComments(){
+    $.ajax({
+        url: "/comment/query/2",
+        method: "get",
+        success(result) {
+            console.log(result);
+        }
+    })
+}
+function addRespond() {
+    $.ajax({
+        url: "/answer/add",
+        method: "post",
+        data: {
+            content:"这是回复评论内容",
+            userId:"5d8c0f35b650a705e0f21e82",
+            commentId:"5d8bfff3b0234a4028088e94"
+        },
+        success(result) {
+            console.log(result);
+        }
+    })
+}
+function cancelOrder() {
+    $.ajax({
+        url: "/orders/cancel",
+        method: "post",
+        data:{
+            _id:""
+        },
+        success(result) {
+            console.log(result);
+        }
+    })
+}

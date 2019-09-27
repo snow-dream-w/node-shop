@@ -43,7 +43,8 @@ const CommentSchema = new Schema({
     },
     userId:{
         type: ObjectId,
-        required: true
+        required: true,
+        ref: "users"
     },
     goodsId:{
         type: ObjectId,
