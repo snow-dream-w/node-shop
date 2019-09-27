@@ -108,7 +108,7 @@ function addComment() {
         data: {
             content:"这是评论内容",
             grade:5,
-            goodsId:"5d8bfff3b0234a4028088e94"
+            goodsId:"5d8acaecbdaa255658927c0d"
         },
         success(result) {
             console.log(result);
@@ -170,6 +170,15 @@ function cancelOrder() {
         data:{
             _id:""
         },
+        success(result) {
+            console.log(result);
+        }
+    })
+}
+function deleteComment() {
+    $.ajax({
+        url:"/comment/delete/5d8dc2da76a64559685b6c20",
+        method:"delete",
         success(result) {
             console.log(result);
         }

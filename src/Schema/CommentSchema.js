@@ -2,7 +2,7 @@ const { Schema } = require('../Utils/connect');
 const ObjectId = Schema.Types.ObjectId;
 
 const CommentSchema = new Schema({
-    content:{
+    content: {
         type: String,
         required: true,
         validate: {
@@ -12,7 +12,7 @@ const CommentSchema = new Schema({
             message: props => `${props.value} is not a valid value`
         }
     },
-    againstContent:{
+    againstContent: {
         type: String,
         validate: {
             validator: function (v) {
@@ -21,8 +21,8 @@ const CommentSchema = new Schema({
             message: props => `${props.value} is not a valid value`
         }
     },
-    grade:{
-        type:Number,
+    grade: {
+        type: Number,
         required: true,
         validate: {
             validator: function (v) {
@@ -31,8 +31,8 @@ const CommentSchema = new Schema({
             message: props => `${props.value} is not a valid value`
         }
     },
-    niceNum:{
-        type:Number,
+    niceNum: {
+        type: Number,
         default: 0,
         validate: {
             validator: function (v) {
@@ -41,21 +41,42 @@ const CommentSchema = new Schema({
             message: props => `${props.value} is not a valid value`
         }
     },
-    userId:{
+    userId: {
         type: ObjectId,
         required: true,
         ref: "users"
     },
-    goodsId:{
+    goodsId: {
         type: ObjectId,
         required: true
     }
-},{
-    versionKey: false,
-    timestamps: {
-        createdAt: "created",
-        updatedAt:"updated"
-    }
+}, {
+        versionKey: false,
+        timestamps: {
+            createdAt: "created",
+            updatedAt: "updated"
+        }
+    })
+
+CommentSchema.post("remove", doc => {
+    const Answer = require('../Models/AnswerModel')
+    const Goods = require('../Models/GoodsModel')
+    
+    const { _id: commentId, goodsId: goodsId } = doc
+    
+    Goods.findByIdAndUpdate(goodsId, { $inc: { commentNum: -1 } }).exec()
+    Answer.find({ commentId: commentId })
+        .then(data => {
+            data.forEach(v => v.remove())
+        })
+
+})
+
+CommentSchema.post("save", doc => {
+    const Goods = require('../Models/GoodsModel')
+    const { goodsId: goodsId } = doc
+
+    Goods.findByIdAndUpdate(goodsId, { $inc: { commentNum: 1 } }).exec()
 })
 
 module.exports = CommentSchema

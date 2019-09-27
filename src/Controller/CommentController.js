@@ -65,3 +65,16 @@ exports.getCommentInfo = async (ctx) =>{
         ctx.body = result
     })
 }
+/**
+ * 删除评论
+ */
+exports.deleteCommentInfo = async (ctx) =>{
+    const commentId = ctx.params.id
+
+    await new Promise(async (resolve) =>{
+        let result = await commentService.deleteCommentInfo(commentId)
+        return resolve(result)
+    }).then(data =>{
+        ctx.body = data
+    })
+}

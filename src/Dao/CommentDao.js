@@ -2,9 +2,10 @@ const Comment = require('../Models/CommentModel');
 
 module.exports = class CommentDao {
      /**
-     * @param {*评论包括以下内容：content评论内容,againstContent追评内容
-        * grade分数,niceNum点赞数,userId用户id,goodsId商品id} comment 
-        */
+      * 评论商品
+      * @param {*评论包括以下内容：content评论内容,againstContent追评内容
+      * grade分数,niceNum点赞数,userId用户id,goodsId商品id} comment 
+      */
     async addCommentInfo(comment){
         let result = {
             status: 0,
@@ -23,10 +24,10 @@ module.exports = class CommentDao {
         })
     }
     /**
-     * 
+     * 追评
      * @param {*评论包括以下内容：content评论内容,againstContent追评内容
-        * grade分数,niceNum点赞数,userId用户id,goodsId商品id} appendComment 
-        */
+     * grade分数,niceNum点赞数,userId用户id,goodsId商品id} appendComment 
+     */
     async appendCommentInfo(appendComment){
         let result = {
             status:0,
@@ -82,6 +83,29 @@ module.exports = class CommentDao {
             result.data = err
         })
     return result
+    }
+    /**
+     * 删除评论
+     * @param {*评论id} commentId 
+     */
+    async deleteCommentInfo(commentId){
+        let result = {
+            status:0,
+            data:{}
+        }
+        await Comment.findById(commentId)
+        .then(data => {
+            result.status=1
+            result.data=data
+            data.remove()
+        })
+        .catch(err => {
+            result = {
+                status: 0,
+                msg: err
+            }
+        })
+       return result
     }
     
 }

@@ -39,4 +39,11 @@ module.exports = class CommentService {
     async getCommentInfo(limit){
         return await this.commentDao.getCommentInfo(limit)
     }
+    /**
+     * 删除评论
+     * @param {*评论id} commentId 
+     */
+    async deleteCommentInfo(commentId){
+        return await this.commentDao.deleteCommentInfo(commentId)
+    }
 }
