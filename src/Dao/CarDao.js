@@ -74,4 +74,13 @@ module.exports = class CarDao {
             })
         return result
     }
+    /**
+     * 更新购物车商品状态
+     * @param {*购物车编号} carId 
+     * @param {*状态值} status 
+     * @param {*订单编号} orderId 
+     */
+    async updateCarInfo(carId, status, orderId) {
+        await Car.findByIdAndUpdate(carId, { $set: { status, orderId } }).exec()
+    }
 }

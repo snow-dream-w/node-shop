@@ -3,20 +3,20 @@ function addGoods(){
         url: "/goods/add",
         method: "post",
         data: {
-            name: "紫薯米",
+            name: "耳机",
             description: "123",
-            types: "1234",
-            types:"主食",
-            type:"面类",
-            price:12.0,
+            types: "12",
+            types:"配件",
+            type:"手机配件",
+            price:10.0,
             specification:"20",
             sales:0,
             unit:"斤",
             discount:{
                 status:1,
-                percent:7
+                percent:1
             },
-            inventoryNum:129,
+            inventoryNum:5,
             commentNum:0,
             status:1
         },
@@ -85,7 +85,7 @@ function GoodsDetail() {
 }
 function orderPaymentedInfo() {
     $.ajax({
-        url: "/orders/orderInfo/2",
+        url: "/orders/orderInfo/1",
         method: "get",
         success(result) {
             console.log(result);
@@ -94,7 +94,7 @@ function orderPaymentedInfo() {
 }
 function orderCompletedInfo() {
     $.ajax({
-        url: "/orders/orderInfo/3",
+        url: "/orders/orderInfo/1",
         method: "get",
         success(result) {
             console.log(result);
@@ -168,7 +168,7 @@ function cancelOrder() {
         url: "/orders/cancel",
         method: "post",
         data:{
-            _id:""
+            _id: "5d8f5e3875fa704730ab2851"
         },
         success(result) {
             console.log(result);

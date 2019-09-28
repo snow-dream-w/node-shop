@@ -151,4 +151,12 @@ module.exports = class UserDao {
             })
         return result
     }
+    /**
+     * 更新用户购物车数量
+     * @param {*用户ID} userId 
+     * @param {*更新数量} num 
+     */
+    async updateBusNum(userId, num) {
+        await User.findByIdAndUpdate(userId, { $inc: { busNum: num } }).exec()
+    }
 }

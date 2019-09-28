@@ -57,7 +57,9 @@ const CommentSchema = new Schema({
             updatedAt: "updated"
         }
     })
-
+/**
+ * 删除评论完成前执行的钩子函数，修改商品评论数量，删除此评论的回复
+ */
 CommentSchema.post("remove", doc => {
     const Answer = require('../Models/AnswerModel')
     const Goods = require('../Models/GoodsModel')
@@ -71,7 +73,9 @@ CommentSchema.post("remove", doc => {
         })
 
 })
-
+/**
+ * 添加评论完成前执行的钩子函数，修改商品评论数量
+ */
 CommentSchema.post("save", doc => {
     const Goods = require('../Models/GoodsModel')
     const { goodsId: goodsId } = doc

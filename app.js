@@ -55,7 +55,6 @@ app.use(carRouter.routes()).use(carRouter.allowedMethods())
 
 //注册日志模块，控制台打印日志
 app.use(logger())
-
 app.listen('3000',()=>{
     console.log('项目启动成功');
 });

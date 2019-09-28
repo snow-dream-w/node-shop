@@ -38,12 +38,17 @@ const CarSchema = new Schema({
         createdAt: "created"
     }
 })
-
+/**
+ * 添加购物信息完成前执行的钩子函数，修改用户购物车商品数量
+ */
 CarSchema.post("save", doc => {
     const User = require('../Models/UserModel')
     const { userId } = doc;
     User.findByIdAndUpdate(userId,{$inc: {busNum: 1}}).exec()
 })
+/**
+ * 删除购物信息完成前执行的钩子函数，修改用户购物车商品数量
+ */
 CarSchema.post("remove", doc => {
     const User = require('../Models/UserModel')
     const { userId } = doc;

@@ -49,14 +49,15 @@ module.exports = class GoodsDao {
             data: null
         }
         return new Promise(resolve => {
-            new Goods(goods).save()
-                .then(data => {
+            new Goods(goods).save((err,data) => {
+                if(err){
+                    result.data = err
+                }else {
                     result.status = 1
                     result.data = data
-                }).catch(err => {
-                    result.data = err
-                })
-                resolve(result)
+                }
+                 resolve(result)
+            }) 
         })
     }
   /**
@@ -147,7 +148,7 @@ module.exports = class GoodsDao {
         }
         await Goods.findOne({ _id: goodsId })
             .then(data => {
-                if (data.length !== 0) {
+                if (data) {
                     result.status = 1
                     result.data = data
                 } else {
