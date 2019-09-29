@@ -67,16 +67,22 @@ module.exports = class OrderService {
     }
     /**
      * 查看订单
+     * @param {*用户id} userId 
      * @param {*订单状态} orderStatus 
      */
-    async queryOrderByStatus(orderStatus) {
-        return await this.orderDao.queryOrderByStatus(orderStatus)
+    async queryOrderByStatus(userId,orderStatus) {
+        return await this.orderDao.queryOrderByStatus(userId,orderStatus)
     }
     /**
      * 取消订单
+     * @param {*用户id} userId
      * @param {*订单id} orderId 
      */
-    async cancelOrderInfo(orderId) {
-        return await this.orderDao.cancelOrderInfo(orderId)
+    async cancelOrderInfo(userId,orderId) {
+        return await this.orderDao.cancelOrderInfo(userId,orderId)
+    }
+
+    async deleteOrderInfo(orderId,status) {
+        return await this.orderDao.deleteOrderInfo(orderId,status)
     }
 }

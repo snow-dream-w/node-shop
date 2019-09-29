@@ -25,13 +25,14 @@ module.exports = class OrderDao {
     }
     /**
      * 查看订单
+     * @param {*用户id} userId
      * @param {*订单状态} orderStatus 
-     */async queryOrderByStatus(orderStatus) {
+     */async queryOrderByStatus(userId,orderStatus) {
         let result = {
             status: 0,
             data: {}
         }
-        await Order.find({ status: orderStatus })
+        await Order.find({ userId:userId, status: orderStatus })
             .then(data => {
                 if (data) {
                     result.status = 1
@@ -44,12 +45,17 @@ module.exports = class OrderDao {
             })
         return result
     }
-    async cancelOrderInfo(orderId) {
+    /**
+     * 取消订单
+     * @param {*用户id} userId 
+     * @param {*订单id} orderId 
+     */
+    async cancelOrderInfo(userId,orderId) {
         let result = {
             status: 0,
             data: "取消失败"
         }
-        await Order.updateOne({ _id: orderId }, { $set: { status: 4 } })
+        await Order.updateOne({ _id: orderId,userId:userId }, { $set: { status: 0 } })
             .then(data => {
                 result.status = 1
                 result.data = data
@@ -57,5 +63,29 @@ module.exports = class OrderDao {
                 result.data = err
             })
         return result
+    }
+    /**
+     * 删除已取消的订单
+     * @param {*订单id } orderId 
+     * @param {*订单状态} status 
+     */
+    async deleteOrderInfo(orderId,status){
+        let result = {
+            status: 0,
+            data: "删除失败"
+        }
+        await Order.findOne({_id:orderId,status:status})
+        .then(data => {
+            result.status=1
+            result.data=data
+            data.remove()
+        })
+        .catch(err => {
+            result = {
+                status: 0,
+                msg: err
+            }
+        })
+       return result
     }
 }

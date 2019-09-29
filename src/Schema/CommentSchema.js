@@ -71,7 +71,6 @@ CommentSchema.post("remove", doc => {
         .then(data => {
             data.forEach(v => v.remove())
         })
-
 })
 /**
  * 添加评论完成前执行的钩子函数，修改商品评论数量

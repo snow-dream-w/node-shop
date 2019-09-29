@@ -33,7 +33,7 @@ module.exports = class CommentDao {
             status:0,
             data :null
         }
-        await Comment.updateOne({_id:appendComment.commentId},
+        await Comment.findOneAndUpdate({_id:appendComment.commentId},
             {$set:{againstContent:appendComment.againstContent}},
             {runValidators: true, new: true}).then(data =>{
             result.status = 1

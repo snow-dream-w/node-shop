@@ -30,22 +30,39 @@ exports.setOrderInfo = async (ctx) => {
 exports.queryOrderByStatus = async (ctx) => {
     //接受参数
     const orderStatus = ctx.params.status;
+    const userId = ctx.session.id;
 
     await new Promise(async (resolve) => {
-        let result = await orderService.queryOrderByStatus(orderStatus)
+        let result = await orderService.queryOrderByStatus(userId,orderStatus)
         return resolve(result)
     }).then(result => {
         ctx.body = result
     })
 }
+/**
+ * 取消订单
+ */
 exports.cancelOrderInfo = async (ctx) => {
     //接受参数
     const params = ctx.request.body;
+    const userId = ctx.session.id;
 
     await new Promise(async (resolve) => {
-        let result = await orderService.cancelOrderInfo(params._id)
+        let result = await orderService.cancelOrderInfo(userId,params._id)
         return resolve(result)
     }).then(result => {
+        ctx.body = result
+    })
+}
+/**
+ * 删除已取消的订单
+ */
+exports.deleteOrderInfo = async (ctx) =>{
+    const orderId = ctx.params.id;
+    await new Promise(async (resolve) =>{
+        let result = await orderService.deleteOrderInfo(orderId,1)
+        return resolve(result)
+    }).then(result =>{
         ctx.body = result
     })
 }

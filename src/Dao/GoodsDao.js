@@ -1,5 +1,6 @@
 const Goods = require('../Models/GoodsModel');
 const Cars = require('../Models/CarModel');
+const Order = require('../Models/OrderModel');
 
 module.exports = class GoodsDao {
     /**
@@ -102,6 +103,28 @@ module.exports = class GoodsDao {
         return result
     }
     /**
+     * 查询订单状态
+     * @param {*} goodsId 
+     */
+    // async isOrderExists(goodsId){
+    //     let result = {
+    //         status: 0,
+    //         data: {}
+    //     } 
+    //     await Order.find({status : 1})
+    //     .then(data => {
+    //         if (data.length !== 0) {
+    //             result.status = 1
+    //             result.data = data
+    //         } else {
+    //             result.data = "未查询到信息"
+    //         }
+    //     }).catch(err => {
+    //         result.data = err
+    //     })
+    // return result
+    // }
+    /**
      * 商品下架,修改商品集合里商品状态
      * @param {*商品id} goodsId 
      */
@@ -111,24 +134,6 @@ module.exports = class GoodsDao {
             data: "下架失败"
         }
         await Goods.updateOne({ _id: goodsId }, { $set: { status: 0 } })
-            .then(data => {
-                result.status = 1
-                result.data = data
-            }).catch(err => {
-                result.data = err
-            })
-        return result
-    }
-    /**
-     * 商品下架，修改购物车里商品状态
-     * @param {*商品id} goodsId 
-     */
-    async updateCarStatus(goodsId) {
-        let result = {
-            status: 0,
-            data: "下架失败"
-        }
-        await Cars.update({ _id: goodsId }, { $set: { status: 0 } })
             .then(data => {
                 result.status = 1
                 result.data = data
@@ -159,5 +164,6 @@ module.exports = class GoodsDao {
             })
         return result
     }
+    
 }
 

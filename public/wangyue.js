@@ -76,7 +76,7 @@ function shelfGoods() {
 }
 function GoodsDetail() {
     $.ajax({
-        url: "/goods/goodsDetail/5d8bfff3b0234a4028088e94",
+        url: "/goods/goodsDetail/5d8f102c1b54af0c789f2ad5",
         method: "get",
         success(result) {
             console.log(result);
@@ -108,7 +108,7 @@ function addComment() {
         data: {
             content:"这是评论内容",
             grade:5,
-            goodsId:"5d8acaecbdaa255658927c0d"
+            goodsId:"5d8f0fa58beefd1f08b381d3"
         },
         success(result) {
             console.log(result);
@@ -121,7 +121,7 @@ function appendComment() {
         method: "post",
         data: {
             againstContent:"这是追加的评论内容",
-            commentId:"5d8ca84ad736841e10209fe6"
+            commentId:"5d8ffa11742cd44c4001dfcc"
         },
         success(result) {
             console.log(result);
@@ -177,7 +177,16 @@ function cancelOrder() {
 }
 function deleteComment() {
     $.ajax({
-        url:"/comment/delete/5d8dc2da76a64559685b6c20",
+        url:"/comment/delete/5d8ffa11742cd44c4001dfcc",
+        method:"delete",
+        success(result) {
+            console.log(result);
+        }
+    })
+}
+function deleteOrder() {
+    $.ajax({
+        url:"/orders/delete/5d90114bfdfb2f2150b07791",
         method:"delete",
         success(result) {
             console.log(result);

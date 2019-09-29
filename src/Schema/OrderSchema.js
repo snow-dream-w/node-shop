@@ -78,5 +78,13 @@ const OrderSchema = new Schema ({
         payAt:"payed"
     }
 })
+/**
+ * 删除订单完成前执行的钩子函数，删除购物车中该订单的相关记录
+ */
+OrderSchema.post("remove",doc =>{
+    const Car = require('../Models/CarModel');
+    const { _id } = doc
+    Car.deleteMany({orderId: _id}).exec()
+})
 
 module.exports = OrderSchema
