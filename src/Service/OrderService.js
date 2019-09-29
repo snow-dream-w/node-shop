@@ -66,6 +66,78 @@ module.exports = class OrderService {
         return result
     }
     /**
+     * 订单结算
+     * @param {*用户编号} userId 
+     * @param {*订单编号} orderId 
+     */
+    async settleAccountOrder(userId,orderId){
+        //获取购物车商品
+        let result = await this.carDao.getOrderGoods(orderId)
+        const goodsList = result.data
+        if(result.status === 0){
+            return result
+        }
+        //判断库存
+        for (let index = 0; index < goodsList.length; index++) {
+            const element = goodsList[index];
+            if(element.num > element.goodsId.inventoryNum){
+                return {
+                    status: 0,
+                    data: `${element.goodsId.name}:库存不足，当前库存为：${element.goodsId.inventoryNum}`
+                }
+            }
+        }
+        //修改库存和销量
+        await this.updateInventorySales(goodsList,1)
+        //判断用户余额是否充足
+        const userInfo = await this.userDao.getUserInfo(userId)
+        const orderInfo = await this.orderDao.queryOrderDetails(orderId)
+        if(userInfo.data.money < orderInfo.data.total){
+            //恢复库存和销量
+            await this.updateInventorySales(goodsList,-1)
+            return {
+                status: 0,
+                data: "余额不足，请充值"
+            }
+        }
+        //更新用户余额
+        result = await this.userDao.updateUserMoney(userId, orderInfo.data.total)
+        if(result.status === 0){
+            //恢复库存和销量
+            await this.updateInventorySales(goodsList,-1)
+            return {
+                status: 0,
+                data: "支付失败"
+            }
+        }
+        //更新订单状态,2为已结算
+        result = await this.orderDao.updateOrderStatus(orderId, 2)
+        if(result.status === 0){
+            //恢复库存和销量和用户余额
+            await this.updateInventorySales(goodsList,-1)
+            await this.userDao.updateUserMoney(userId, -orderInfo.data.total)
+            return {
+                status: 0,
+                data: "支付订单失败"
+            }
+        }
+        return {
+            status: 1,
+            data: "支付成功"
+        }
+    }
+    /**
+     * 更新库存和销量的工具函数
+     * @param {*购物车商品信息} array 
+     * @param {*判断正负} num 
+     */
+    async updateInventorySales(array,num){
+        for (let index = 0; index < array.length; index++) {
+            const element = array[index];
+            await this.goodsDao.updateInventorySales(element.goodsId._id, element.num * num)
+        }
+    }
+    /**
      * 查看订单
      * @param {*用户id} userId 
      * @param {*订单状态} orderStatus 
@@ -81,7 +153,11 @@ module.exports = class OrderService {
     async cancelOrderInfo(userId,orderId) {
         return await this.orderDao.cancelOrderInfo(userId,orderId)
     }
-
+    /**
+     * 删除已取消的订单
+     * @param {*订单id } orderId 
+     * @param {*订单状态} status 
+     */
     async deleteOrderInfo(orderId,status) {
         return await this.orderDao.deleteOrderInfo(orderId,status)
     }

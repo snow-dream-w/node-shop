@@ -15,10 +15,23 @@ const orderService = new OrderService(orderDao, goodsDao, addressDao, carDao, us
  * 创建订单
  */
 exports.setOrderInfo = async (ctx) => {
-    let params = ctx.request.body
-    let userId = ctx.session.id
+    const params = ctx.request.body
+    const userId = ctx.session.id
     await new Promise(resolve => {
         let result = orderService.setOrderInfo(params, userId)
+        return resolve(result)
+    }).then(data => {
+        ctx.body = data
+    })
+}
+/**
+ * 订单结算
+ */
+exports.settleAccountOrder = async (ctx) => {
+    const orderId = ctx.request.body._id
+    const userId = ctx.session.id
+    await new Promise(resolve => {
+        let result = orderService.settleAccountOrder(userId, orderId)
         return resolve(result)
     }).then(data => {
         ctx.body = data
@@ -33,7 +46,7 @@ exports.queryOrderByStatus = async (ctx) => {
     const userId = ctx.session.id;
 
     await new Promise(async (resolve) => {
-        let result = await orderService.queryOrderByStatus(userId,orderStatus)
+        let result = await orderService.queryOrderByStatus(userId, orderStatus)
         return resolve(result)
     }).then(result => {
         ctx.body = result
@@ -48,7 +61,7 @@ exports.cancelOrderInfo = async (ctx) => {
     const userId = ctx.session.id;
 
     await new Promise(async (resolve) => {
-        let result = await orderService.cancelOrderInfo(userId,params._id)
+        let result = await orderService.cancelOrderInfo(userId, params._id)
         return resolve(result)
     }).then(result => {
         ctx.body = result
@@ -57,12 +70,12 @@ exports.cancelOrderInfo = async (ctx) => {
 /**
  * 删除已取消的订单
  */
-exports.deleteOrderInfo = async (ctx) =>{
+exports.deleteOrderInfo = async (ctx) => {
     const orderId = ctx.params.id;
-    await new Promise(async (resolve) =>{
-        let result = await orderService.deleteOrderInfo(orderId,1)
+    await new Promise(async (resolve) => {
+        let result = await orderService.deleteOrderInfo(orderId, 1)
         return resolve(result)
-    }).then(result =>{
+    }).then(result => {
         ctx.body = result
     })
 }

@@ -50,23 +50,23 @@ module.exports = class GoodsDao {
             data: null
         }
         return new Promise(resolve => {
-            new Goods(goods).save((err,data) => {
-                if(err){
+            new Goods(goods).save((err, data) => {
+                if (err) {
                     result.data = err
-                }else {
+                } else {
                     result.status = 1
                     result.data = data
                 }
-                 resolve(result)
-            }) 
+                resolve(result)
+            })
         })
     }
-  /**
-   * 修改商品信息
-   * @param {*商品id} goodsId 
-   * @param {*商品信息对象} goods 
-   */  
-  async updateGoodsInfo(goodsId, goods) {
+    /**
+     * 修改商品信息
+     * @param {*商品id} goodsId 
+     * @param {*商品信息对象} goods 
+     */
+    async updateGoodsInfo(goodsId, goods) {
         let result = {
             status: 0,
             data: null
@@ -88,7 +88,7 @@ module.exports = class GoodsDao {
             status: 0,
             data: {}
         }
-        await Goods.find()
+        await Goods.find({ status: 1 })
             .limit(limit)
             .then(data => {
                 if (data.length !== 0) {
@@ -164,6 +164,24 @@ module.exports = class GoodsDao {
             })
         return result
     }
-    
+    /**
+     * 更新商品库存和销量
+     * @param {*商品编号} goodsId 
+     * @param {*更新数量} num 
+     */
+    async updateInventorySales(goodsId, num) {
+        let result = {
+            status: 0,
+            data: null
+        }
+        await Goods.updateOne({ _id: goodsId }, { $inc: { inventoryNum: -num, sales: num } })
+            .then(data => {
+                result.status = 1
+                result.data = data
+            }).catch(err => {
+                result.data = err
+            })
+        return result
+    }
 }
 

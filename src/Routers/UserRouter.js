@@ -19,7 +19,7 @@ router.post("/user/login",user.loginUserAccount);
 router.post("/user/register",user.registerUserAccount);
 
 //获取个人信息
-router.get("/user/person/:id",user.keepLogin,user.getUserInfo);
+router.get("/user/person",user.keepLogin,user.getUserInfo);
 
 //上传个人头像
 router.post("/user/upload",upload.single('file'),user.uploadUserAvatar);

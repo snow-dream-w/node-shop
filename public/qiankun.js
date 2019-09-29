@@ -85,7 +85,7 @@ function register() {
 }
 function person() {
     $.ajax({
-        url: "/user/person/17865579761",
+        url: "/user/person",
         method: "get",
         success(result) {
             console.log(result);

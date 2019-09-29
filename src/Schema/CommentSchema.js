@@ -41,6 +41,16 @@ const CommentSchema = new Schema({
             message: props => `${props.value} is not a valid value`
         }
     },
+    answerNum: {
+        type: Number,
+        default: 0,
+        validate: {
+            validator: function (v) {
+                return /^\d+$/.test(v);
+            },
+            message: props => `${props.value} is not a valid value`
+        }
+    },
     userId: {
         type: ObjectId,
         required: true,

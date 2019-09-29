@@ -43,4 +43,10 @@ const AnswerSchema = new Schema({
     }
 })
 
+AnswerSchema.post("save",doc => {
+    const Comment = require('../Models/CommentModel')
+    const { commentId } = doc
+    Comment.findByIdAndUpdate(commentId,{$inc: {answerNum: 1}}).exec()
+})
+
 module.exports = AnswerSchema

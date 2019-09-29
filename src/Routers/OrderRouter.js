@@ -5,16 +5,19 @@ const user = require('../Controller/UserController')
 
 const router = new Router
 
-//创建订单，没有获取相应的商品
+//创建订单
 router.post("/order/set",user.keepLogin,order.setOrderInfo)
 
-//查看订单
-router.get("/orders/orderInfo/:status",user.keepLogin,order.queryOrderByStatus);
+//订单结算
+router.post("/order/account",user.keepLogin,order.settleAccountOrder)
+
+//订单列表
+router.get("/order/orderInfo/:status",user.keepLogin,order.queryOrderByStatus);
 
 //取消订单
-router.post("/orders/cancel",user.keepLogin,order.cancelOrderInfo);
+router.post("/order/cancel",user.keepLogin,order.cancelOrderInfo);
 
 //删除订单
-router.del("/orders/delete/:id",user.keepLogin,order.deleteOrderInfo);
+router.del("/order/delete/:id",user.keepLogin,order.deleteOrderInfo);
 
 module.exports = router

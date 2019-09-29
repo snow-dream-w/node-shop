@@ -11,9 +11,7 @@ module.exports = class CommentService {
      * grade分数,niceNum点赞数,userId用户id,goodsId商品id} comment 
      */
     async addCommentInfo(comment) {
-        let result = {}
-        result = await this.commentDao.addCommentInfo(comment)
-        return result
+        return await this.commentDao.addCommentInfo(comment)
     }
     /**
      * 
@@ -21,9 +19,7 @@ module.exports = class CommentService {
      * grade分数,niceNum点赞数,userId用户id,goodsId商品id} appendComment 
      */
     async appendCommentInfo(appendComment) {
-        let result = {}
-        result = await this.commentDao.appendCommentInfo(appendComment)
-        return result
+        return await this.commentDao.appendCommentInfo(appendComment)
     }
     /**
      * 点赞

@@ -85,7 +85,7 @@ function GoodsDetail() {
 }
 function orderPaymentedInfo() {
     $.ajax({
-        url: "/orders/orderInfo/1",
+        url: "/order/orderInfo/1",
         method: "get",
         success(result) {
             console.log(result);
@@ -94,7 +94,7 @@ function orderPaymentedInfo() {
 }
 function orderCompletedInfo() {
     $.ajax({
-        url: "/orders/orderInfo/1",
+        url: "/order/orderInfo/1",
         method: "get",
         success(result) {
             console.log(result);
@@ -106,9 +106,9 @@ function addComment() {
         url: "/comment/add",
         method: "post",
         data: {
-            content:"这是评论内容",
+            content:"这是评论内容5",
             grade:5,
-            goodsId:"5d8f0fa58beefd1f08b381d3"
+            goodsId:"5d8f10eaf4be2943dc3b52eb"
         },
         success(result) {
             console.log(result);
@@ -121,7 +121,7 @@ function appendComment() {
         method: "post",
         data: {
             againstContent:"这是追加的评论内容",
-            commentId:"5d8ffa11742cd44c4001dfcc"
+            commentId:"5d90666b7e03f23ccc5fe262"
         },
         success(result) {
             console.log(result);
@@ -133,7 +133,7 @@ function clickNice() {
         url: "/comment/nice",
         method: "post",
         data: {
-           _id:"5d8ca84ad736841e10209fe6"
+           _id:"5d90666b7e03f23ccc5fe262"
         },
         success(result) {
             console.log(result);
@@ -156,7 +156,7 @@ function addRespond() {
         data: {
             content:"这是回复评论内容",
             userId:"5d8c0f35b650a705e0f21e82",
-            commentId:"5d8bfff3b0234a4028088e94"
+            commentId:"5d90666b7e03f23ccc5fe262"
         },
         success(result) {
             console.log(result);
@@ -165,7 +165,7 @@ function addRespond() {
 }
 function cancelOrder() {
     $.ajax({
-        url: "/orders/cancel",
+        url: "/order/cancel",
         method: "post",
         data:{
             _id: "5d8f5e3875fa704730ab2851"

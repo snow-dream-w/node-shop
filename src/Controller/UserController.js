@@ -101,7 +101,7 @@ exports.loginUserAccount = async (ctx) => {
  */
 exports.getUserInfo = async (ctx) => {
     //获取参数
-    const userId = ctx.params.id
+    const userId = ctx.session.id
     await new Promise((resolve) => {
         let result = userService.getUserInfo(userId)
         resolve(result)

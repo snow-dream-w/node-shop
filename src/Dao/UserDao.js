@@ -81,7 +81,7 @@ module.exports = class UserDao {
             status: 0,
             data: {}
         }
-        await User.findOne({ telephone: userId }, { _id: 0, password: 0, perference: 0 })
+        await User.findOne({ _id: userId }, { _id: 0, password: 0, perference: 0 })
             .then(data => {
                 if (data) {
                     result.status = 1
@@ -158,5 +158,24 @@ module.exports = class UserDao {
      */
     async updateBusNum(userId, num) {
         await User.findByIdAndUpdate(userId, { $inc: { busNum: num } }).exec()
+    }
+    /**
+     * 更新用户余额
+     * @param {*用户ID} userId 
+     * @param {*更新金额} money 
+     */
+    async updateUserMoney(userId, money) {
+        let result = {
+            status: 0,
+            data: {}
+        }
+        await User.updateOne({_id: userId}, { $inc: { money: -money } })
+            .then(data => {
+                result.status = 1
+                result.data = data
+            }).catch(err => {
+                result.data = err
+            })
+        return result
     }
 }
