@@ -122,4 +122,23 @@ module.exports = class CarDao {
     async updateCarInfo(carId, status, orderId) {
         await Car.findByIdAndUpdate(carId, { $set: { status, orderId } }).exec()
     }
+    /**
+     * 查询已生成及已支付未发货的订单是否在购物车中
+     * @param {*订单id} orderId 
+     */
+    async queryPaymentedGoods(orderId) {
+        let result = {
+            status: 0,
+            data: null
+        }
+        await Car.find({orderId:orderId})
+            .then(data => {
+                result.status = 1
+                result.data = data
+            }).catch(err => {
+                result.data = err
+            })
+            return result
+    }
+
 }

@@ -123,4 +123,21 @@ module.exports = class OrderDao {
             })
         return result
     }
+    /**
+     * 查询已生成未支付的订单以及已结算未发货的订单
+     */
+    async queryPaymentedOreder(){
+        let result = {
+            status : 0,
+            data : {}
+        }
+        await Order.find({$or:[{status:1},{status:2}]})
+        .then(data =>{
+                result.status = 1
+                result.data = data
+        }).catch(err =>{
+            result.data = err
+        })
+        return result
+    }
 }

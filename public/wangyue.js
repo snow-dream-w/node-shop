@@ -67,7 +67,8 @@ function shelfGoods() {
         url: "/goods/shelves",
         method: "post",
         data:{
-            _id:"5d8bfff3b0234a4028088e94",
+            _id:"5d8f102c1b54af0c789f2ad5",
+            status:1
         },
         success(result) {
             console.log(result);
@@ -85,7 +86,7 @@ function GoodsDetail() {
 }
 function orderPaymentedInfo() {
     $.ajax({
-        url: "/order/orderInfo/1",
+        url: "/order/orderInfo/2",
         method: "get",
         success(result) {
             console.log(result);
@@ -94,7 +95,7 @@ function orderPaymentedInfo() {
 }
 function orderCompletedInfo() {
     $.ajax({
-        url: "/order/orderInfo/1",
+        url: "/order/orderInfo/4",
         method: "get",
         success(result) {
             console.log(result);
@@ -188,6 +189,27 @@ function deleteOrder() {
     $.ajax({
         url:"/orders/delete/5d90114bfdfb2f2150b07791",
         method:"delete",
+        success(result) {
+            console.log(result);
+        }
+    })
+}
+function deleteGoods() {
+    $.ajax({
+        url: "/goods/delete",
+        method: "post",
+        data:{
+            _id:"5d8f102c1b54af0c789f2ad5"
+        },
+        success(result) {
+            console.log(result);
+        }
+    })
+}
+function confirmOrder() {
+    $.ajax({
+        url: "/order/orderInfo/3",
+        method: "get",
         success(result) {
             console.log(result);
         }

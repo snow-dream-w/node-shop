@@ -103,37 +103,15 @@ module.exports = class GoodsDao {
         return result
     }
     /**
-     * 查询订单状态
-     * @param {*} goodsId 
-     */
-    // async isOrderExists(goodsId){
-    //     let result = {
-    //         status: 0,
-    //         data: {}
-    //     } 
-    //     await Order.find({status : 1})
-    //     .then(data => {
-    //         if (data.length !== 0) {
-    //             result.status = 1
-    //             result.data = data
-    //         } else {
-    //             result.data = "未查询到信息"
-    //         }
-    //     }).catch(err => {
-    //         result.data = err
-    //     })
-    // return result
-    // }
-    /**
-     * 商品下架,修改商品集合里商品状态
+     * 修改商品集合里商品状态，已下架或已删除
      * @param {*商品id} goodsId 
      */
-    async shelfGoodsInfo(goodsId) {
+    async shelfGoodsInfo(goodsId,status) {
         let result = {
             status: 0,
             data: "下架失败"
         }
-        await Goods.updateOne({ _id: goodsId }, { $set: { status: 0 } })
+        await Goods.updateOne({ _id: goodsId }, { $set: { status: status } })
             .then(data => {
                 result.status = 1
                 result.data = data

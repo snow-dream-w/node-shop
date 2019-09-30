@@ -20,4 +20,7 @@ router.post("/goods/shelves",user.keepLogin,goods.shelfGoodsInfo);
 //商品详情
 router.get("/goods/goodsDetail/:id",user.keepLogin,goods.getGoodsDetail);
 
+//删除已下架商品
+router.post("/goods/delete",user.keepLogin,goods.deleteGoodsInfo);
+
 module.exports = router

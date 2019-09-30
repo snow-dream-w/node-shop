@@ -1,10 +1,14 @@
 module.exports = class GoodsService {
     /**
-    * 构造函数
-    * @param {*GoodsDao实例} goodsDao 
-    */
-    constructor(goodsDao) {
+     * 构造函数
+     * @param {*GoodsDao实例} goodsDao 
+     * @param {*CarsDao实例} carDao 
+     * @param {*OrderDao实例} orderDao 
+     */
+    constructor(goodsDao, carDao, orderDao) {
         this.goodsDao = goodsDao;
+        this.carDao = carDao;
+        this.orderDao = orderDao;
     }
 
     /**
@@ -58,14 +62,26 @@ module.exports = class GoodsService {
      * 商品下架
      * @param {*商品id} goodsId 
      */
-    async shelfGoodsInfo(goodsId) {
-        let result = {}
-        // result = await this.goodsDao.isOrderExists(goodsId)
-        // if (result.status === 1) {
-        //     result = await this.goodsDao.shelfGoodsInfo(goodsId)
-        // }
-        result = await this.goodsDao.shelfGoodsInfo(goodsId)
-        return result
+    async shelfGoodsInfo(goodsId, status) {
+        let result = await this.orderDao.queryPaymentedOreder()
+        if (result.status === 0) {
+            return {
+                status: 0,
+                data: "404"
+            }
+        }
+        for (let i = 0; i < result.data.length; i++) {
+            const orderId = result.data[i]._id;
+            const goods = await this.carDao.queryPaymentedGoods(orderId)
+            for (let i = 0; i < goods.data.length; i++) {
+                if (goods.data[i].goodsId.toString() === goodsId)
+                    return {
+                        status: 0,
+                        data: "该商品存在相关的未完成的订单！"
+                    }
+            }
+        }
+        return await this.goodsDao.shelfGoodsInfo(goodsId, status)
     }
     /**
      * 获取商品详情
@@ -73,5 +89,12 @@ module.exports = class GoodsService {
      */
     async getGoodsDetail(goodsId) {
         return await this.goodsDao.getGoodsDetail(goodsId)
+    }
+    /**
+     * 删除已下架商品
+     * @param {*商品id} goodsId 
+     */
+    async deleteGoodsInfo(goodsId ){
+        return await this.goodsDao.shelfGoodsInfo(goodsId,2)
     }
 }
