@@ -1,6 +1,6 @@
 function delAddress() {
     $.ajax({
-        url: "/address/delete/5d8ca9f763636a4f8ca0cdfa",
+        url: "/address/delete/5d91cc400e928e2c34848fd9",
         method: "delete",
         success(result) {
             console.log(result);
@@ -12,7 +12,7 @@ function defaultAddress() {
         url: "/address/default",
         method: "post",
         data: {
-            _id: '5d8ca9df63636a4f8ca0cdf8'
+            _id: '5d91cc400e928e2c34848fd9'
         },
         success(result) {
             console.log(result);
@@ -30,7 +30,7 @@ function queryAddress() {
 }
 function detailAddress() {
     $.ajax({
-        url: "/address/detail/5d8c31719112491b2c6e2524",
+        url: "/address/detail/5d91c9852aceb821585f7c89",
         method: "get",
         success(result) {
             console.log(result);

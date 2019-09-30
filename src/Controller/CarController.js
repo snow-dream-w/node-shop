@@ -1,7 +1,9 @@
 const CarDao = require('../Dao/CarDao')
 const carDao = new CarDao()
+const RecommendDao = require('../Dao/RecommendDao')
+const recommendDao = new RecommendDao()
 const CarService = require('../Service/CarService')
-const carService = new CarService(carDao)
+const carService = new CarService(carDao, recommendDao)
 
 /**
  * 添加购物车商品信息

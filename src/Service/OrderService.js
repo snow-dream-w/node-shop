@@ -6,20 +6,22 @@ module.exports = class OrderService {
     * @param {*AddressDao实例} addressDao
     * @param {*CarDao实例} carDao
     * @param {*UserDao实例} userDao
+    * @param {*RecommendDao实例} recommendDao
     */
-    constructor(orderDao, goodsDao, addressDao, carDao, userDao) {
+    constructor(orderDao, goodsDao, addressDao, carDao, userDao, recommendDao) {
         this.orderDao = orderDao;
         this.goodsDao = goodsDao;
         this.addressDao = addressDao;
         this.carDao = carDao;
         this.userDao = userDao;
+        this.recommendDao = recommendDao;
     }
     /**
      * 创建订单
      * @param {*对象数组，包括s收货地址编号addressId，商品信息（购物车编号cars，商品编号goodsId和购买数量num）} params
      * @param {*用户ID} userId 
      */
-    async setOrderInfo(params,userId) {
+    async setOrderInfo(params, userId) {
         let array = params.array
         let result = {
             status: 0,
@@ -29,7 +31,7 @@ module.exports = class OrderService {
         //结算总额和判断库存
         for (let index = 0; index < array.length; index++) {
             let goodsInfo = await this.goodsDao.getGoodsDetail(array[index].goodsId)
-            if(goodsInfo.data.inventoryNum < new Number(array[index].num)){
+            if (goodsInfo.data.inventoryNum < new Number(array[index].num)) {
                 result.data = goodsInfo.data.name + "-库存不足！目前库存为" + goodsInfo.data.inventoryNum
                 return result
             }
@@ -43,7 +45,7 @@ module.exports = class OrderService {
         let address = await this.addressDao.getAddressDetail(params.addressId)
         //创建订单对象
         let orderInfo = {
-            userId:userId,
+            userId: userId,
             name: address.data.name,
             telephone: address.data.telephone,
             post: address.data.post,
@@ -55,13 +57,17 @@ module.exports = class OrderService {
         }
         //写入订单
         result = await this.orderDao.setOrderInfo(orderInfo)
-        if(result.status === 1){
+        if (result.status === 1) {
             //更新购物车商品状态
-            for (let index = 0; index < array.length; index++){
-                await this.carDao.updateCarInfo(array[index]._id, 2, result.data._id)
+            for (let index = 0; index < array.length; index++) {
+                let { goodsId } = await this.carDao.updateCarInfo(array[index]._id, 2, result.data._id)
+                //更新用户-商品倒查表
+                this.recommendDao.saveUserGoods(userId, goodsId, 2)
+                //更新商品-用户倒查表
+                this.recommendDao.saveGoodsUser(userId, goodsId, 2)
             }
             //更新用户购物车商品数量busNum
-            await this.userDao.updateBusNum(userId,-array.length)
+            await this.userDao.updateBusNum(userId, -array.length)
         }
         return result
     }
@@ -70,17 +76,17 @@ module.exports = class OrderService {
      * @param {*用户编号} userId 
      * @param {*订单编号} orderId 
      */
-    async settleAccountOrder(userId,orderId){
+    async settleAccountOrder(userId, orderId) {
         //获取购物车商品
         let result = await this.carDao.getOrderGoods(orderId)
         const goodsList = result.data
-        if(result.status === 0){
+        if (result.status === 0) {
             return result
         }
         //判断库存
         for (let index = 0; index < goodsList.length; index++) {
             const element = goodsList[index];
-            if(element.num > element.goodsId.inventoryNum){
+            if (element.num > element.goodsId.inventoryNum) {
                 return {
                     status: 0,
                     data: `${element.goodsId.name}:库存不足，当前库存为：${element.goodsId.inventoryNum}`
@@ -88,13 +94,13 @@ module.exports = class OrderService {
             }
         }
         //修改库存和销量
-        await this.updateInventorySales(goodsList,1)
+        await this.updateInventorySales(goodsList, 1)
         //判断用户余额是否充足
         const userInfo = await this.userDao.getUserInfo(userId)
         const orderInfo = await this.orderDao.queryOrderDetails(orderId)
-        if(userInfo.data.money < orderInfo.data.total){
+        if (userInfo.data.money < orderInfo.data.total) {
             //恢复库存和销量
-            await this.updateInventorySales(goodsList,-1)
+            await this.updateInventorySales(goodsList, -1)
             return {
                 status: 0,
                 data: "余额不足，请充值"
@@ -102,9 +108,9 @@ module.exports = class OrderService {
         }
         //更新用户余额
         result = await this.userDao.updateUserMoney(userId, orderInfo.data.total)
-        if(result.status === 0){
+        if (result.status === 0) {
             //恢复库存和销量
-            await this.updateInventorySales(goodsList,-1)
+            await this.updateInventorySales(goodsList, -1)
             return {
                 status: 0,
                 data: "支付失败"
@@ -112,15 +118,24 @@ module.exports = class OrderService {
         }
         //更新订单状态,2为已结算
         result = await this.orderDao.updateOrderStatus(orderId, 2)
-        if(result.status === 0){
+        if (result.status === 0) {
             //恢复库存和销量和用户余额
-            await this.updateInventorySales(goodsList,-1)
+            await this.updateInventorySales(goodsList, -1)
             await this.userDao.updateUserMoney(userId, -orderInfo.data.total)
             return {
                 status: 0,
                 data: "支付订单失败"
             }
         }
+        //更新倒查表
+        for (let index = 0; index < goodsList.length; index++) {
+            const element = goodsList[index];
+            //更新用户-商品倒查表
+            this.recommendDao.saveUserGoods(userId, element.goodsId._id, 3)
+            //更新商品-用户倒查表
+            this.recommendDao.saveGoodsUser(userId, element.goodsId._id, 3)
+        }
+        //更新商品-用户倒查表
         return {
             status: 1,
             data: "支付成功"
@@ -131,34 +146,34 @@ module.exports = class OrderService {
      * @param {*购物车商品信息} array 
      * @param {*判断正负} num 
      */
-    async updateInventorySales(array,num){
+    async updateInventorySales(array, num) {
         for (let index = 0; index < array.length; index++) {
             const element = array[index];
             await this.goodsDao.updateInventorySales(element.goodsId._id, element.num * num)
         }
     }
     /**
-     * 查看订单
+     * 查看订单列表
      * @param {*用户id} userId 
      * @param {*订单状态} orderStatus 
      */
-    async queryOrderByStatus(userId,orderStatus) {
-        return await this.orderDao.queryOrderByStatus(userId,orderStatus)
+    async queryOrderByStatus(userId, orderStatus) {
+        return await this.orderDao.queryOrderByStatus(userId, orderStatus)
     }
     /**
      * 取消订单
      * @param {*用户id} userId
      * @param {*订单id} orderId 
      */
-    async cancelOrderInfo(userId,orderId) {
-        return await this.orderDao.cancelOrderInfo(userId,orderId)
+    async cancelOrderInfo(userId, orderId) {
+        return await this.orderDao.cancelOrderInfo(userId, orderId)
     }
     /**
      * 删除已取消的订单
      * @param {*订单id } orderId 
      * @param {*订单状态} status 
      */
-    async deleteOrderInfo(orderId,status) {
-        return await this.orderDao.deleteOrderInfo(orderId,status)
+    async deleteOrderInfo(orderId, status) {
+        return await this.orderDao.deleteOrderInfo(orderId, status)
     }
 }

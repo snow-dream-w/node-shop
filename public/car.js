@@ -6,9 +6,14 @@ function setOrder() {
             addressId: '5d8f4c4111729149c41327a9',
             array: [
                 {
-                    _id: '5d90122f779f2b4974791375',
-                    goodsId: '5d8f102c1b54af0c789f2ad5',
+                    _id: '5d91583eafe7a53ea81d2a77',
+                    goodsId: '5d8f0fa58beefd1f08b381d3',
                     num: 2
+                },
+                {
+                    _id: '5d91586c3429af4c4099e37a',
+                    goodsId: '5d8f10eaf4be2943dc3b52eb',
+                    num: 3
                 }
             ]
         },
@@ -22,7 +27,7 @@ function settleOrder() {
         url: "/order/account",
         method: "post",
         data: {
-            _id: '5d901334b309d01b945c44b5'
+            _id: '5d9159668c0cf709b0b1e9fa'
         },
         success(result) {
             console.log(result);
@@ -34,8 +39,8 @@ function addCar() {
         url: "/car/add",
         method: "post",
         data: {
-            goodsId: '5d8f102c1b54af0c789f2ad5',
-            num: 2
+            goodsId: '5d8f10eaf4be2943dc3b52eb',
+            num: 3
         },
         success(result) {
             console.log(result);

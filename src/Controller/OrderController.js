@@ -8,8 +8,10 @@ const CarDao = require('../Dao/CarDao')
 const carDao = new CarDao()
 const UserDao = require('../Dao/UserDao')
 const userDao = new UserDao()
+const RecommendDao = require('../Dao/RecommendDao')
+const recommendDao = new RecommendDao()
 const OrderService = require('../Service/OrderService')
-const orderService = new OrderService(orderDao, goodsDao, addressDao, carDao, userDao)
+const orderService = new OrderService(orderDao, goodsDao, addressDao, carDao, userDao, recommendDao)
 
 /**
  * 创建订单

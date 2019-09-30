@@ -11,10 +11,6 @@ module.exports = class AddressDao {
             status: 0,
             data: null
         }
-        let n = await Address.countDocuments()
-        if (n === 0) {
-            addressInfo.defaultAddress = 1
-        }
         return new Promise(resolve => {
             new Address(addressInfo).save((err, data) => {
                 if (err) {
@@ -26,17 +22,23 @@ module.exports = class AddressDao {
                 resolve(result)
             })
         })
+    }/**
+     * 获取用户收货地址数量
+     * @param {*用户编号} userId 
+     */
+    async getAddressCount(userId) {
+        return await Address.countDocuments({ userId: userId })
     }
     /**
      * 获取收货地址
      * @param {*限制获取数量} limit 
      */
-    async getReceivingAddress(limit) {
+    async getReceivingAddress(userId,limit) {
         let result = {
             status: 0,
             data: null
         }
-        await Address.find({})
+        await Address.find({userId:userId})
             .limit(limit)
             .then(data => {
                 result.status = 1
@@ -95,17 +97,6 @@ module.exports = class AddressDao {
             status: 0,
             data: null
         }
-        await Address.findOne({ _id: addressId }, { defaultAddress: 1 })
-            .then(data => {
-                if(data.defaultAddress === 1){
-                    result.status = 1
-                }  
-            })
-        if(result.status === 1){
-            result.status = 0
-            result.data = "默认地址不可删除"
-            return result
-        }
         await Address.deleteOne({ _id: addressId })
             .then(data => {
                 result.status = 1
@@ -118,11 +109,47 @@ module.exports = class AddressDao {
         return result
     }
     /**
+     * 检测是否为默认地址
+     * @param {*地址编号} addressId 
+     */
+    async isDefaultAddress(addressId) {
+        let result = {
+            status: 0,
+            data: null
+        }
+        await Address.findOne({ _id: addressId })
+            .then(data => {
+                if (data && data.defaultAddress === 1) {
+                    result.status = 1
+                    result.data = "默认地址不可删除"
+                }
+            })
+        return result
+    }
+    /**
      * 设置默认地址
      * @param {*用户_id} userId 
      * @param {*地址_id} addressId 
      */
-    async defaultReceivingAddress(userId, addressId) {
+    async defaultReceivingAddress(addressId) {
+        let result = {
+            status: 0,
+            data: null
+        }
+        await Address.updateOne({ _id: addressId }, { $set: { defaultAddress: 1 } })
+            .then(data => {
+                result.status = 1
+                result.data = data
+            }).catch(err => {
+                result.data = err
+            })
+        return result
+    }
+    /**
+     * 重置地址状态统一为非默认
+     * @param {*用户编号} userId 
+     */
+    async resetAddressStatus(userId) {
         let result = {
             status: 0,
             data: null
@@ -134,15 +161,13 @@ module.exports = class AddressDao {
             }).catch(err => {
                 result.data = err
             })
-        if (result.status === 1) {
-            await Address.updateOne({ _id: addressId }, { $set: { defaultAddress: 1 } })
-                .then(data => {
-                    result.data = data
-                }).catch(err => {
-                    result.status = 1
-                    result.data = err
-                })
-        }
         return result
     }
+    // /**
+    //  * 获取用户默认地址
+    //  * @param {*用户编号} userId 
+    //  */
+    // async getDefaultAddress(userId) {
+    //     return await Address.findOne({$and:[{userId: userId},{defaultAddress: 1}]})
+    // }
 }

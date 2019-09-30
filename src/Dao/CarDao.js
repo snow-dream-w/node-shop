@@ -120,7 +120,7 @@ module.exports = class CarDao {
      * @param {*订单编号} orderId 
      */
     async updateCarInfo(carId, status, orderId) {
-        await Car.findByIdAndUpdate(carId, { $set: { status, orderId } }).exec()
+        return await Car.findByIdAndUpdate(carId, { $set: { status, orderId } },{new: true}).exec()
     }
     /**
      * 查询已生成及已支付未发货的订单是否在购物车中

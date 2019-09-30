@@ -21,9 +21,10 @@ exports.addReceivingAddress = async (ctx) => {
  * 获取收货地址
  */
 exports.getReceivingAddress = async (ctx) => {
-    let limit = new Number(ctx.params.limit)
+    const limit = new Number(ctx.params.limit)
+    const userId = ctx.session.id
     await new Promise(resolve => {
-        let result = addressService.getReceivingAddress(limit)
+        let result = addressService.getReceivingAddress(userId,limit)
         resolve(result)
     }).then(data => {
         ctx.body = data
