@@ -1,3 +1,4 @@
+const { REQUEST_RESULT,GOODS_STATUS } = require('../Utils/status_enum')
 module.exports = class GoodsService {
     /**
      * 构造函数
@@ -33,7 +34,7 @@ module.exports = class GoodsService {
     async addGoodsInfo(goods) {
         let result = {}
         result = await this.goodsDao.isGoodExists(goods.name)
-        if (result.status === 1) {
+        if (result.status === REQUEST_RESULT.SUCCESS) {
             result = await this.goodsDao.addGoodsInfo(goods)
         }
         return result
@@ -46,7 +47,7 @@ module.exports = class GoodsService {
     async updateGoodsInfo(goodsId, goods) {
         let result = {}
         result = await this.goodsDao.isGoodExists(goods.name)
-        if (result.status === 1) {
+        if (result.status === REQUEST_RESULT.SUCCESS) {
             result = await this.goodsDao.updateGoodsInfo(goodsId, goods)
         }
         return result
@@ -62,11 +63,11 @@ module.exports = class GoodsService {
      * 商品下架
      * @param {*商品id} goodsId 
      */
-    async shelfGoodsInfo(goodsId, status) {
+    async shelfGoodsInfo(goodsId) {
         let result = await this.orderDao.queryPaymentedOreder()
-        if (result.status === 0) {
+        if (result.status === REQUEST_RESULT.FAIL) {
             return {
-                status: 0,
+                status: REQUEST_RESULT.FAIL,
                 data: "404"
             }
         }
@@ -76,12 +77,12 @@ module.exports = class GoodsService {
             for (let i = 0; i < goods.data.length; i++) {
                 if (goods.data[i].goodsId.toString() === goodsId)
                     return {
-                        status: 0,
+                        status: REQUEST_RESULT.FAIL,
                         data: "该商品存在相关的未完成的订单！"
                     }
             }
         }
-        return await this.goodsDao.shelfGoodsInfo(goodsId, status)
+        return await this.goodsDao.shelfGoodsInfo(goodsId, GOODS_STATUS.UNDERCARRIAGE)
     }
     /**
      * 获取商品详情
@@ -95,6 +96,6 @@ module.exports = class GoodsService {
      * @param {*商品id} goodsId 
      */
     async deleteGoodsInfo(goodsId ){
-        return await this.goodsDao.shelfGoodsInfo(goodsId,2)
+        return await this.goodsDao.shelfGoodsInfo(goodsId,GOODS_STATUS.DELETE)
     }
 }

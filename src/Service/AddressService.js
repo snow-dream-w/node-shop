@@ -1,4 +1,4 @@
-
+const { REQUEST_RESULT,ADDRESS_STATUS } = require('../Utils/status_enum')
 module.exports = class AddressService {
     /**
      * 
@@ -17,7 +17,7 @@ module.exports = class AddressService {
         const n = await this.addressDao.getAddressCount(addressInfo.userId)
         if(n === 0){
             //若地址数量为0，则设为默认地址1
-            addressInfo.defaultAddress = 1
+            addressInfo.defaultAddress = ADDRESS_STATUS.DEFAULT
         }
        return await this.addressDao.addReceivingAddress(addressInfo)
     }
@@ -50,7 +50,7 @@ module.exports = class AddressService {
     async delReceivingAddress(addressId) {
         //判断当前地址是否为默认地址
         let result = await this.addressDao.isDefaultAddress(addressId)
-        if(result.status === 1){
+        if(result.status === REQUEST_RESULT.SUCCESS){
             //如果是默认地址则返回提示信息
             return result
         }
@@ -64,9 +64,9 @@ module.exports = class AddressService {
     async defaultReceivingAddress(userId, addressId) {
         //重置所有地址为非默认
         const reset = await this.addressDao.resetAddressStatus(userId)
-        if(reset.status === 0){
+        if(reset.status === REQUEST_RESULT.FAIL){
             return {
-                status: 0,
+                status: REQUEST_RESULT.FAIL,
                 data: "404"
             }
         }

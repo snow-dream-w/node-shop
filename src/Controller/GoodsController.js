@@ -59,10 +59,9 @@ exports.shelfGoodsInfo = async (ctx) =>{
     //接受参数
     const goods = ctx.request.body
     const goodsId = goods._id
-    const status = goods.status
 
     await new Promise(async (resolve) => {
-        let result = await goodsService.shelfGoodsInfo(goodsId,status)
+        let result = await goodsService.shelfGoodsInfo(goodsId)
         return resolve(result)
     }).then(result =>{
         ctx.body = result

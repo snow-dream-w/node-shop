@@ -1,4 +1,5 @@
 const Order = require('../Models/OrderModel');
+const { REQUEST_RESULT,ORDER_STATUS } = require('../Utils/status_enum')
 
 module.exports = class OrderDao {
     /**
@@ -8,7 +9,7 @@ module.exports = class OrderDao {
      */
     async setOrderInfo(orderInfo) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: {}
         }
         return new Promise(resolve => {
@@ -16,7 +17,7 @@ module.exports = class OrderDao {
                 if (err) {
                     result.data = err
                 } else {
-                    result.status = 1
+                    result.status = REQUEST_RESULT.SUCCESS
                     result.data = data
                 }
                 resolve(result)
@@ -29,12 +30,12 @@ module.exports = class OrderDao {
      */
     async queryOrderDetails(orderId) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: {}
         }
         await Order.findById(orderId, { _id: 0, total: 1 })
             .then(data => {
-                result.status = 1
+                result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
             }).catch(err => {
                 result.data = err
@@ -45,15 +46,16 @@ module.exports = class OrderDao {
      * 查看订单列表
      * @param {*用户id} userId
      * @param {*订单状态} orderStatus 
-     */async queryOrderByStatus(userId, orderStatus) {
+     */
+    async queryOrderByStatus(userId, orderStatus) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: {}
         }
         await Order.find({ userId: userId, status: orderStatus })
             .then(data => {
                 if (data) {
-                    result.status = 1
+                    result.status = REQUEST_RESULT.SUCCESS
                     result.data = data
                 } else {
                     result.data = "未查询到信息"
@@ -70,12 +72,12 @@ module.exports = class OrderDao {
      */
     async cancelOrderInfo(userId, orderId) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: "取消失败"
         }
-        await Order.updateOne({ _id: orderId, userId: userId }, { $set: { status: 0 } })
+        await Order.updateOne({ _id: orderId, userId: userId }, { $set: { status: ORDER_STATUS.CANCEL } })
             .then(data => {
-                result.status = 1
+                result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
             }).catch(err => {
                 result.data = err
@@ -89,12 +91,12 @@ module.exports = class OrderDao {
      */
     async deleteOrderInfo(orderId, status) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: "删除失败"
         }
         await Order.findOne({ _id: orderId, status: status })
             .then(data => {
-                result.status = 1
+                result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
                 data.remove()
             })
@@ -110,12 +112,12 @@ module.exports = class OrderDao {
      */
     async updateOrderStatus(orderId, status) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: "删除失败"
         }
         await Order.updateOne({ _id: orderId }, { $set: { status: status } })
             .then(data => {
-                result.status = 1
+                result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
             })
             .catch(err => {
@@ -128,12 +130,12 @@ module.exports = class OrderDao {
      */
     async queryPaymentedOreder(){
         let result = {
-            status : 0,
+            status : REQUEST_RESULT.FAIL,
             data : {}
         }
-        await Order.find({$or:[{status:1},{status:2}]})
+        await Order.find({$or:[{status:ORDER_STATUS.ESTABLISH},{status:ORDER_STATUS.SETTLE}]})
         .then(data =>{
-                result.status = 1
+                result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
         }).catch(err =>{
             result.data = err

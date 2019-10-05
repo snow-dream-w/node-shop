@@ -1,6 +1,6 @@
 const User = require('../Models/UserModel');
 const encrypt = require("../Utils/encrypt")
-const assert = require("assert")
+const { REQUEST_RESULT } = require('../Utils/status_enum')
 
 module.exports = class UserDao {
     /**
@@ -10,14 +10,14 @@ module.exports = class UserDao {
      */
     async loginUserAccount(userId, password) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: "请重新尝试"
         }
         await User.find({ telephone: userId })
             .then(data => {
                 if (data.length !== 0) {
                     if (data[0].password === encrypt(password)) {
-                        result.status = 1
+                        result.status = REQUEST_RESULT.SUCCESS
                         result.data = data[0]
                     } else {
                         result.data = "密码错误"
@@ -36,7 +36,7 @@ module.exports = class UserDao {
      */
     async registerUserAccount(user) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: null
         }
         return new Promise(resolve => {
@@ -44,7 +44,7 @@ module.exports = class UserDao {
                 if (err) {
                     result.data = err
                 } else {
-                    result.status = 1
+                    result.status = REQUEST_RESULT.SUCCESS
                     result.data = data
                 }
                 resolve(result)
@@ -57,7 +57,7 @@ module.exports = class UserDao {
      */
     async isExistAccount(userId) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: {}
         }
         await User.find({ telephone: userId })
@@ -65,7 +65,7 @@ module.exports = class UserDao {
                 if (data.length !== 0) {
                     result.data = "用户名已存在"
                 } else {
-                    result.status = 1
+                    result.status = REQUEST_RESULT.SUCCESS
                 }
             }).catch(err => {
                 result.data = err
@@ -78,13 +78,13 @@ module.exports = class UserDao {
      */
     async getUserInfo(userId) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: {}
         }
         await User.findOne({ _id: userId }, { _id: 0, password: 0, perference: 0 })
             .then(data => {
                 if (data) {
-                    result.status = 1
+                    result.status = REQUEST_RESULT.SUCCESS
                     result.data = data
                 } else {
                     result.data = "未查询到信息，请重新尝试"
@@ -101,12 +101,12 @@ module.exports = class UserDao {
      */
     async uploadUserAvatar(userId, avatarPath) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: {}
         }
         await User.updateOne({ telephone: userId }, { '$set': { avatar: avatarPath } })
             .then(data => {
-                result.status = 1
+                result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
             }).catch(err => {
                 result.data = err
@@ -120,12 +120,12 @@ module.exports = class UserDao {
      */
     async editUserInfo(userId, info) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: {}
         }
         await User.findOneAndUpdate({ telephone: userId }, { $set: info }, { runValidators: true, new: true })
             .then(data => {
-                result.status = 1
+                result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
             }).catch(err => {
                 result.data = err
@@ -139,12 +139,12 @@ module.exports = class UserDao {
      */
     async editUserPassword(userId, newPassword) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: {}
         }
         await User.updateOne({ telephone: userId }, { $set: { password: encrypt(newPassword) } })
             .then(data => {
-                result.status = 1
+                result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
             }).catch(err => {
                 result.data = err
@@ -166,12 +166,12 @@ module.exports = class UserDao {
      */
     async updateUserMoney(userId, money) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: {}
         }
         await User.updateOne({_id: userId}, { $inc: { money: -money } })
             .then(data => {
-                result.status = 1
+                result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
             }).catch(err => {
                 result.data = err

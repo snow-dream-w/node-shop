@@ -1,5 +1,6 @@
 const Car = require('../Models/CarModel')
 const Goods = require('../Models/GoodsModel')
+const { REQUEST_RESULT,CAR_STATUS,GOODS_STATUS,CAR_MAX_NUM } = require('../Utils/status_enum')
 
 module.exports = class CarDao {
     /**
@@ -8,25 +9,25 @@ module.exports = class CarDao {
      */
     async addCarInfo(carInfo) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: null
         }
         //判断是否下架
-        let r = await Goods.findOne({ _id: carInfo.goodsId }, { _id: 0, status: 1 })
-        if (r.status !== 1) {
+        let r = await Goods.findOne({ _id: carInfo.goodsId }, { _id: 0, status: GOODS_STATUS.GROUNGING })
+        if (r.status !== GOODS_STATUS.GROUNGING) {
             result.data = "商品已下架！"
             return result
         }
         //判断商品是否超过购物车容量
-        let count = await Car.countDocuments({ userId: carInfo.userId, status: 1 })
+        let count = await Car.countDocuments({ userId: carInfo.userId, status: CAR_STATUS.PUT })
         return new Promise(resolve => {
-            if (count <= 100) {
+            if (count <= CAR_MAX_NUM.COUNT) {
                 new Car(carInfo).save((err, data) => {
                     if (err) {
                         result.data = err
                     } else {
                         result.data = data
-                        result.status = 1
+                        result.status = REQUEST_RESULT.SUCCESS
                     }
                     resolve(result)
                 })
@@ -42,10 +43,10 @@ module.exports = class CarDao {
      */
     async getCarInfo(userId) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: null
         }
-        await Car.find({ userId: userId, status: 1 })
+        await Car.find({ userId: userId, status: CAR_STATUS.PUT })
             .populate({
                 path: 'goodsId',
                 select: {
@@ -58,7 +59,7 @@ module.exports = class CarDao {
                     inventoryNum: 1
                 }
             }).then(data => {
-                result.status = 1
+                result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
             }).catch(err => {
                 result.data = err
@@ -71,10 +72,10 @@ module.exports = class CarDao {
      */
     async getOrderGoods(orderId) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: null
         }
-        await Car.find({ orderId: orderId, status: 2 })
+        await Car.find({ orderId: orderId, status: CAR_STATUS.SETTLE })
             .populate({
                 path: 'goodsId',
                 select: {
@@ -83,7 +84,7 @@ module.exports = class CarDao {
                     inventoryNum: 1
                 }
             }).then(data => {
-                result.status = 1
+                result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
             }).catch(err => {
                 result.data = err
@@ -96,7 +97,7 @@ module.exports = class CarDao {
      */
     async deleteCarInfo(carId) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: null
         }
         await Car.findById(carId)
@@ -104,7 +105,7 @@ module.exports = class CarDao {
                 if (!data) {
                     result.data = "数据不存在！"
                 } else {
-                    result.status = 1
+                    result.status = REQUEST_RESULT.SUCCESS
                     result.data = data
                     data.remove()
                 }
@@ -128,12 +129,12 @@ module.exports = class CarDao {
      */
     async queryPaymentedGoods(orderId) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: null
         }
         await Car.find({orderId:orderId})
             .then(data => {
-                result.status = 1
+                result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
             }).catch(err => {
                 result.data = err

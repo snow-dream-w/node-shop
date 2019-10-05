@@ -1,4 +1,5 @@
 const Address = require('../Models/AddressModel')
+const { REQUEST_RESULT,ADDRESS_STATUS } = require('../Utils/status_enum')
 
 module.exports = class AddressDao {
     /**
@@ -8,7 +9,7 @@ module.exports = class AddressDao {
      */
     async addReceivingAddress(addressInfo) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: null
         }
         return new Promise(resolve => {
@@ -16,7 +17,7 @@ module.exports = class AddressDao {
                 if (err) {
                     result.data = err
                 } else {
-                    result.status = 1
+                    result.status = REQUEST_RESULT.SUCCESS
                     result.data = data
                 }
                 resolve(result)
@@ -35,13 +36,13 @@ module.exports = class AddressDao {
      */
     async getReceivingAddress(userId,limit) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: null
         }
         await Address.find({userId:userId})
             .limit(limit)
             .then(data => {
-                result.status = 1
+                result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
             })
             .catch(err => {
@@ -55,12 +56,12 @@ module.exports = class AddressDao {
      */
     async getAddressDetail(addressId) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: null
         }
         await Address.findOne({ _id: addressId })
             .then(data => {
-                result.status = 1
+                result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
             })
             .catch(err => {
@@ -75,12 +76,12 @@ module.exports = class AddressDao {
      */
     async editAddressInfo(addressInfo) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: null
         }
         await Address.findOneAndUpdate({ _id: addressInfo._id }, { $set: addressInfo }, { runValidators: true, new: true })
             .then(data => {
-                result.status = 1
+                result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
             })
             .catch(err => {
@@ -94,16 +95,16 @@ module.exports = class AddressDao {
      */
     async delReceivingAddress(addressId) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: null
         }
         await Address.deleteOne({ _id: addressId })
             .then(data => {
-                result.status = 1
+                result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
             })
             .catch(err => {
-                result.status = 0
+                result.status = REQUEST_RESULT.FAIL
                 result.data = err
             })
         return result
@@ -114,13 +115,13 @@ module.exports = class AddressDao {
      */
     async isDefaultAddress(addressId) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: null
         }
         await Address.findOne({ _id: addressId })
             .then(data => {
-                if (data && data.defaultAddress === 1) {
-                    result.status = 1
+                if (data && data.defaultAddress === ADDRESS_STATUS.DEFAULT) {
+                    result.status = REQUEST_RESULT.SUCCESS
                     result.data = "默认地址不可删除"
                 }
             })
@@ -133,12 +134,12 @@ module.exports = class AddressDao {
      */
     async defaultReceivingAddress(addressId) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: null
         }
-        await Address.updateOne({ _id: addressId }, { $set: { defaultAddress: 1 } })
+        await Address.updateOne({ _id: addressId }, { $set: { defaultAddress: ADDRESS_STATUS.DEFAULT } })
             .then(data => {
-                result.status = 1
+                result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
             }).catch(err => {
                 result.data = err
@@ -151,12 +152,12 @@ module.exports = class AddressDao {
      */
     async resetAddressStatus(userId) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: null
         }
-        await Address.updateMany({ userId: userId }, { $set: { defaultAddress: 0 } })
+        await Address.updateMany({ userId: userId }, { $set: { defaultAddress: ADDRESS_STATUS.UNDEFAULT } })
             .then(data => {
-                result.status = 1
+                result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
             }).catch(err => {
                 result.data = err

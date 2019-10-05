@@ -1,6 +1,5 @@
 const Goods = require('../Models/GoodsModel');
-const Cars = require('../Models/CarModel');
-const Order = require('../Models/OrderModel');
+const { REQUEST_RESULT,GOODS_STATUS } = require('../Utils/status_enum')
 
 module.exports = class GoodsDao {
     /**
@@ -24,7 +23,7 @@ module.exports = class GoodsDao {
     */
     async isGoodExists(goodsName) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: {}
         }
         await Goods.find({ name: goodsName }, (err, data) => {
@@ -34,7 +33,7 @@ module.exports = class GoodsDao {
                 if (data.length !== 0) {
                     result.data = "该商品名已存在"
                 } else {
-                    result.status = 1
+                    result.status = REQUEST_RESULT.SUCCESS
                 }
             }
         })
@@ -46,7 +45,7 @@ module.exports = class GoodsDao {
      */
     async addGoodsInfo(goods) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: null
         }
         return new Promise(resolve => {
@@ -54,7 +53,7 @@ module.exports = class GoodsDao {
                 if (err) {
                     result.data = err
                 } else {
-                    result.status = 1
+                    result.status = REQUEST_RESULT.SUCCESS
                     result.data = data
                 }
                 resolve(result)
@@ -68,14 +67,14 @@ module.exports = class GoodsDao {
      */
     async updateGoodsInfo(goodsId, goods) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: null
         }
         await Goods.updateOne({ _id: goodsId }, { $set: goods }, { runValidators: true, new: true }).then(data => {
-            result.status = 1
+            result.status = REQUEST_RESULT.SUCCESS
             result.data = data
         }).catch(err => {
-            console.log("数据不合法");
+            result.data = err
         })
         return result
     }
@@ -85,14 +84,14 @@ module.exports = class GoodsDao {
      */
     async getGoodsInfo(limit) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: {}
         }
-        await Goods.find({ status: 1 })
+        await Goods.find({ status: GOODS_STATUS.GROUNGING })
             .limit(limit)
             .then(data => {
                 if (data.length !== 0) {
-                    result.status = 1
+                    result.status = REQUEST_RESULT.SUCCESS
                     result.data = data
                 } else {
                     result.data = "未查询到信息"
@@ -108,12 +107,12 @@ module.exports = class GoodsDao {
      */
     async shelfGoodsInfo(goodsId,status) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: "下架失败"
         }
         await Goods.updateOne({ _id: goodsId }, { $set: { status: status } })
             .then(data => {
-                result.status = 1
+                result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
             }).catch(err => {
                 result.data = err
@@ -126,13 +125,13 @@ module.exports = class GoodsDao {
      */
     async getGoodsDetail(goodsId) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: {}
         }
         await Goods.findOne({ _id: goodsId })
             .then(data => {
                 if (data) {
-                    result.status = 1
+                    result.status = REQUEST_RESULT.SUCCESS
                     result.data = data
                 } else {
                     result.data = "未查询到信息"
@@ -149,12 +148,12 @@ module.exports = class GoodsDao {
      */
     async updateInventorySales(goodsId, num) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: null
         }
         await Goods.updateOne({ _id: goodsId }, { $inc: { inventoryNum: -num, sales: num } })
             .then(data => {
-                result.status = 1
+                result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
             }).catch(err => {
                 result.data = err

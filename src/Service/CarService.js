@@ -1,3 +1,4 @@
+const { REQUEST_RESULT,WEIGHT } = require('../Utils/status_enum')
 module.exports = class CarService{
     /**
      * 构造函数
@@ -9,16 +10,16 @@ module.exports = class CarService{
         this.recommendDao = recommendDao
     }
     /**
-     * 购物车添加一条信息5
+     * 购物车添加一条信息
      * @param {*购物车信息实例，包括用户ID userId、商品ID goodsId和商品数量num} carInfo 
      */
     async addCarInfo(carInfo){
         let result =  await this.carDao.addCarInfo(carInfo)
-        if(result.status === 1){
+        if(result.status === REQUEST_RESULT.SUCCESS){
             //更新用户-商品倒查表
-            this.recommendDao.saveUserGoods(carInfo.userId, result.data.goodsId, 1)
+            this.recommendDao.saveUserGoods(carInfo.userId, result.data.goodsId, WEIGHT.PUT_CAR)
             //更新商品-用户倒查表
-            this.recommendDao.saveGoodsUser(carInfo.userId, result.data.goodsId, 1)
+            this.recommendDao.saveGoodsUser(carInfo.userId, result.data.goodsId, WEIGHT.PUT_CAR)
         }
         return result
     }

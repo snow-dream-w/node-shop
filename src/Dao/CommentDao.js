@@ -1,5 +1,5 @@
 const Comment = require('../Models/CommentModel');
-
+const { REQUEST_RESULT } = require('../Utils/status_enum')
 module.exports = class CommentDao {
      /**
       * 评论商品
@@ -8,7 +8,7 @@ module.exports = class CommentDao {
       */
     async addCommentInfo(comment){
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: null
         }
         return new Promise(resolve => {
@@ -16,7 +16,7 @@ module.exports = class CommentDao {
                 if (err) {
                     result.data = err
                 } else {
-                    result.status = 1
+                    result.status = REQUEST_RESULT.SUCCESS
                     result.data = data
                 }
                 resolve(result)   
@@ -30,13 +30,13 @@ module.exports = class CommentDao {
      */
     async appendCommentInfo(appendComment){
         let result = {
-            status:0,
+            status:REQUEST_RESULT.FAIL,
             data :null
         }
         await Comment.findOneAndUpdate({_id:appendComment.commentId},
             {$set:{againstContent:appendComment.againstContent}},
             {runValidators: true, new: true}).then(data =>{
-            result.status = 1
+            result.status = REQUEST_RESULT.SUCCESS
             result.data = data
         }).catch(err =>{
             result.data=err
@@ -49,12 +49,12 @@ module.exports = class CommentDao {
      */
     async clickNice(commentId){
         let result = {
-            status:0,
+            status:REQUEST_RESULT.FAIL,
             data:{}
         }
         await Comment.updateOne({_id:commentId},{$inc:{niceNum:1}})
         .then(data =>{
-            result.status = 1
+            result.status = REQUEST_RESULT.SUCCESS
             result.data =data
         }).catch(err =>{
             result.data = err
@@ -67,14 +67,14 @@ module.exports = class CommentDao {
      */
     async getCommentInfo(limit){
         let result = {
-            status:0,
+            status:REQUEST_RESULT.FAIL,
             data:{}
         }
         await Comment.find()
         .limit(limit)
         .then(data => {
             if (data.length !== 0) {
-                result.status = 1
+                result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
             } else {
                 result.data = "未查询到信息"
@@ -90,18 +90,18 @@ module.exports = class CommentDao {
      */
     async deleteCommentInfo(commentId){
         let result = {
-            status:0,
+            status:REQUEST_RESULT.FAIL,
             data:{}
         }
         await Comment.findById(commentId)
         .then(data => {
-            result.status=1
+            result.status=REQUEST_RESULT.SUCCESS
             result.data=data
             data.remove()
         })
         .catch(err => {
             result = {
-                status: 0,
+                status: REQUEST_RESULT.FAIL,
                 msg: err
             }
         })

@@ -1,3 +1,4 @@
+const { REQUEST_RESULT } = require('../Utils/status_enum')
 module.exports = class UserService{
     /**
      * 构造函数
@@ -22,7 +23,7 @@ module.exports = class UserService{
     async registerUserAccount(user) {
         let result = {}
         result = await this.userDao.isExistAccount(user.telephone)
-        if(result.status === 1){
+        if(result.status === REQUEST_RESULT.SUCCESS){
             result = this.userDao.registerUserAccount(user)
         }
         return result
@@ -57,11 +58,11 @@ module.exports = class UserService{
      */
     async editUserPassword(userId,pwd){
         let result = await this.userDao.loginUserAccount(userId,pwd.oldPassword)
-        if(result.status === 1){
+        if(result.status === REQUEST_RESULT.SUCCESS){
             return await this.userDao.editUserPassword(userId,pwd.newPassword)
         }
         return {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: "原密码输入错误"
         }  
     }

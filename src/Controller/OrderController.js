@@ -75,7 +75,7 @@ exports.cancelOrderInfo = async (ctx) => {
 exports.deleteOrderInfo = async (ctx) => {
     const orderId = ctx.params.id;
     await new Promise(async (resolve) => {
-        let result = await orderService.deleteOrderInfo(orderId, 1)
+        let result = await orderService.deleteOrderInfo(orderId)
         return resolve(result)
     }).then(result => {
         ctx.body = result

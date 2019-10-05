@@ -3,7 +3,7 @@ const userDao = new UserDao()
 const UserService = require('../Service/UserService')
 const userService = new UserService(userDao)
 const encrypt = require("../Utils/encrypt")
-
+const { REQUEST_RESULT } = require('../Utils/status_enum')
 /**
  * 用户注册
  */
@@ -39,7 +39,7 @@ exports.loginUserAccount = async (ctx) => {
     //查找数据
     await new Promise(async (resolve, reject) => {
         let result = await userService.loginUserAccount(userId,password)
-        if(result.status === 0){
+        if(result.status === REQUEST_RESULT.FAIL){
             reject(result.data)
         }
         resolve(result.data)
@@ -155,8 +155,6 @@ exports.editUserPassword = async (ctx) => {
     })
 }
 
-
-
 /**
  * 保持登录状态
  */
@@ -170,7 +168,7 @@ exports.keepLogin = async (ctx, next) => {
             }
         } else{
             return ctx.body = {
-                status: 0,
+                status: REQUEST_RESULT.FAIL,
                 data: "未登录"
             }
         }

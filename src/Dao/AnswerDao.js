@@ -1,5 +1,5 @@
 const Answer = require('../Models/AnswerModel');
-
+const { REQUEST_RESULT } = require('../Utils/status_enum')
 module.exports = class AnswerDao {
     /**
      * 回复评论
@@ -8,7 +8,7 @@ module.exports = class AnswerDao {
      */
     async addRespondInfo(respond) {
         let result = {
-            status: 0,
+            status: REQUEST_RESULT.FAIL,
             data: null
         }
         return new Promise(resolve => {
@@ -16,7 +16,7 @@ module.exports = class AnswerDao {
                 if (err) {
                     result.data = err
                 } else {
-                    result.status = 1
+                    result.status = REQUEST_RESULT.SUCCESS
                     result.data = data
                 }
                 resolve(result)
