@@ -78,6 +78,14 @@ exports.loginUserAccount = async (ctx) => {
             overwrite: false,
             // signed: false
         });
+        ctx.cookies.set("avatar", data.avatar, {
+            domin: "localhost",
+            path: "/",
+            maxAge: 36e5,
+            httpOnly: false, //true不让客户端访问这个cookie
+            overwrite: false,
+            // signed: false//默认是true
+        })
         //后台设置session
         ctx.session = {
             uid: data.telephone,
@@ -114,9 +122,16 @@ exports.getUserInfo = async (ctx) => {
  * 上传头像
  */
 exports.uploadUserAvatar = async (ctx) => {
-    // const userId = ctx.session.uid
-    const userId = '17865579761'
+    const userId = ctx.session.uid
     const avatarPath = '/avatar/' + ctx.req.file.filename
+    ctx.cookies.set("avatar", avatarPath, {
+        domin: "localhost",
+        path: "/",
+        maxAge: 36e5,
+        httpOnly: false, //true不让客户端访问这个cookie
+        overwrite: false,
+        // signed: false//默认是true
+    })
     await new Promise(resolve => {
         let result = userService.uploadUserAvatar(userId,avatarPath)
         resolve(result)
@@ -174,6 +189,30 @@ exports.keepLogin = async (ctx, next) => {
         }
     }
     await next()
+}
+
+/**
+ * 保持登录状态
+ */
+exports.checkLogin = async (ctx, next) => {
+    if (ctx.session.isNew) {
+        if (ctx.cookies.get("username")) {
+            ctx.session = {
+                uid: ctx.cookies.get('uid'),
+                role: ctx.cookies.get('role'),
+                id: ctx.cookies.get('id')
+            }
+        } else{
+            return ctx.body = {
+                status: REQUEST_RESULT.FAIL,
+                data: "未登录"
+            }
+        }
+    }
+    ctx.body = {
+        status: REQUEST_RESULT.SUCCESS,
+        data: "已登录"
+    }
 }
 
 /**

@@ -30,6 +30,9 @@ router.post("/user/edit/info",user.keepLogin,user.editUserInfo);
 //修改密码
 router.post("/user/edit/password",user.keepLogin,user.editUserPassword);
 
+//验证登录状态
+router.get("/user/check_login",user.checkLogin);
+
 //退出登录
 router.get("/user/logout",user.keepLogin,user.logout);
 
