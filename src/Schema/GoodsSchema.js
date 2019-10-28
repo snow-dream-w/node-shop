@@ -22,7 +22,7 @@ const GoodsSchema = new Schema({
         }
 
     },
-    images: {
+    images: [{
         type: String,
         validate: {
             validator: function (v) {
@@ -30,13 +30,13 @@ const GoodsSchema = new Schema({
             },
             message: props => `${props.value} is not a valid value`
         }
-    },
+    }],
     types: {
         type: String,
         required: true,
         validate: {
             validator: function (v) {
-                return /^[\u4e00-\u9fa5]{1,10}$/.test(v);
+                return /^[a-zA-Z_-\u4e00-\u9fa5]{1,20}$/.test(v);
             },
             message: props => `${props.value} is not a valid value`
         }
@@ -46,7 +46,7 @@ const GoodsSchema = new Schema({
         required: true,
         validate: {
             validator: function (v) {
-                return /^[\u4e00-\u9fa5]{1,10}$/.test(v);
+                return /^[a-zA-Z_-\u4e00-\u9fa5]{1,20}$/.test(v);
             },
             message: props => `${props.value} is not a valid value`
         }
@@ -73,6 +73,7 @@ const GoodsSchema = new Schema({
     },
     sales: {
         type: Number,
+        default:0,
         validate: {
             validator: function (v) {
                 return /^\d+$/.test(v);
@@ -111,6 +112,7 @@ const GoodsSchema = new Schema({
     },
     inventoryNum: {
         type: Number,
+        required: true,
         validate: {
             validator: function (v) {
                 return /^\d+$/.test(v);

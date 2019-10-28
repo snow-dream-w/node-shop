@@ -14,10 +14,27 @@ const goodsService = new GoodsService(goodsDao,carDao,orderDao)
 exports.addGoodsInfo = async (ctx) => {
     //接收参数
     const goods = ctx.request.body
-
     //发起保存请求
     await new Promise(async (resolve) => {
         let result = await goodsService.addGoodsInfo(goods)
+        console.log(result);
+        
+        return resolve(result)
+    }).then(result => {
+        ctx.body = result
+    })
+}
+/**
+ * 更新商品图片
+ */
+exports.updateGoodsImage = async (ctx) => {
+    const goodsId = ctx.request.body.goodsId
+    const filename = '/goods_image/' + ctx.req.file.filename
+    await new Promise(async (resolve) => {
+        let result = await goodsService.updateGoodsImage(goodsId,filename)
+        if(result.status === 1){
+            result.data = filename
+        }
         return resolve(result)
     }).then(result => {
         ctx.body = result

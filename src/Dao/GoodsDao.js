@@ -48,9 +48,13 @@ module.exports = class GoodsDao {
             status: REQUEST_RESULT.FAIL,
             data: null
         }
+        console.log(goods);
+        
         return new Promise(resolve => {
             new Goods(goods).save((err, data) => {
                 if (err) {
+                    console.log(err);
+                    
                     result.data = err
                 } else {
                     result.status = REQUEST_RESULT.SUCCESS
@@ -59,6 +63,24 @@ module.exports = class GoodsDao {
                 resolve(result)
             })
         })
+    }
+    /**
+     * 更新商品图片
+     * @param {*商品编号} goodsId 
+     * @param {*图片名称} filename 
+     */
+    async updateGoodsImage(goodsId,filename){
+        let result = {
+            status: REQUEST_RESULT.FAIL,
+            data: null
+        }
+        await Goods.updateOne({ _id: goodsId }, { $push: {images: filename} }, { runValidators: true }).then(data => {
+            result.status = REQUEST_RESULT.SUCCESS
+            result.data = data
+        }).catch(err => {
+            result.data = err
+        })
+        return result
     }
     /**
      * 修改商品信息

@@ -40,6 +40,14 @@ module.exports = class GoodsService {
         return result
     }
     /**
+     * 更新商品图片
+     * @param {*商品编号} goodsId 
+     * @param {*图片名称} filename 
+     */
+    async updateGoodsImage(goodsId,filename){
+        return await this.goodsDao.updateGoodsImage(goodsId,filename)
+    }
+    /**
      * 修改商品信息
      * @param {*商品id} goodsId 
      * @param {*商品信息对象} goods 
