@@ -17,8 +17,6 @@ exports.addGoodsInfo = async (ctx) => {
     //发起保存请求
     await new Promise(async (resolve) => {
         let result = await goodsService.addGoodsInfo(goods)
-        console.log(result);
-        
         return resolve(result)
     }).then(result => {
         ctx.body = result
@@ -61,7 +59,6 @@ exports.updateGoodsInfo = async (ctx) => {
  */
 exports.getGoodsInfo = async (ctx) => {
     let limit = new Number(ctx.params.limit)
-
     await new Promise(async (resolve) => {
         let result = await goodsService.getGoodsInfo(limit)
         return resolve(result)

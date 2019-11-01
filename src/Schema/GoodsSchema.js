@@ -36,7 +36,7 @@ const GoodsSchema = new Schema({
         required: true,
         validate: {
             validator: function (v) {
-                return /^[a-zA-Z_-\u4e00-\u9fa5]{1,20}$/.test(v);
+                return /^[a-zA-Z_-\u4e00-\u9fa5]{1,40}$/.test(v);
             },
             message: props => `${props.value} is not a valid value`
         }
@@ -46,7 +46,7 @@ const GoodsSchema = new Schema({
         required: true,
         validate: {
             validator: function (v) {
-                return /^[a-zA-Z_-\u4e00-\u9fa5]{1,20}$/.test(v);
+                return /^[a-zA-Z_-\u4e00-\u9fa5]{1,40}$/.test(v);
             },
             message: props => `${props.value} is not a valid value`
         }

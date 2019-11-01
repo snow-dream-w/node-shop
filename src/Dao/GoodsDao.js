@@ -48,13 +48,9 @@ module.exports = class GoodsDao {
             status: REQUEST_RESULT.FAIL,
             data: null
         }
-        console.log(goods);
-        
         return new Promise(resolve => {
             new Goods(goods).save((err, data) => {
                 if (err) {
-                    console.log(err);
-                    
                     result.data = err
                 } else {
                     result.status = REQUEST_RESULT.SUCCESS
@@ -112,12 +108,8 @@ module.exports = class GoodsDao {
         await Goods.find({ status: GOODS_STATUS.GROUNGING })
             .limit(limit)
             .then(data => {
-                if (data.length !== 0) {
-                    result.status = REQUEST_RESULT.SUCCESS
-                    result.data = data
-                } else {
-                    result.data = "未查询到信息"
-                }
+                result.status = REQUEST_RESULT.SUCCESS
+                result.data = data
             }).catch(err => {
                 result.data = err
             })

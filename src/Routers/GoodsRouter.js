@@ -14,10 +14,10 @@ router.post("/goods/add",goods.addGoodsInfo);
 router.post("/goods/update",user.keepLogin,goods.updateGoodsInfo);
 
 //获取商品信息
-router.get("/goods/query/:limit",user.keepLogin,goods.getGoodsInfo);
+router.get("/goods/query/:limit",goods.getGoodsInfo);
 
 //商品下架
-router.post("/goods/shelves",user.keepLogin,goods.shelfGoodsInfo);
+router.post("/goods/shelves",goods.shelfGoodsInfo);
 
 //商品详情
 router.get("/goods/goodsDetail/:id",user.keepLogin,goods.getGoodsDetail);
