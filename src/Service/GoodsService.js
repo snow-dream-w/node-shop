@@ -62,10 +62,13 @@ module.exports = class GoodsService {
     }
     /**
      * 获取商品信息列表
-     * @param {*获取商品数量} limit 
+     * @param {*获取商品数量} limit
+     * @param {*商品一级类型} types
+     * @param {*商品二级类型} type
+     * @param {*商品状态} status
      */
-    async getGoodsInfo(limit) {
-        return await this.goodsDao.getGoodsInfo(limit)
+    async getGoodsInfo(params) {
+        return await this.goodsDao.getGoodsInfo(params)
     }
     /**
      * 商品下架

@@ -1,5 +1,5 @@
 const Goods = require('../Models/GoodsModel');
-const { REQUEST_RESULT,GOODS_STATUS } = require('../Utils/status_enum')
+const { REQUEST_RESULT, GOODS_STATUS } = require('../Utils/status_enum')
 
 module.exports = class GoodsDao {
     /**
@@ -26,17 +26,16 @@ module.exports = class GoodsDao {
             status: REQUEST_RESULT.FAIL,
             data: {}
         }
-        await Goods.find({ name: goodsName }, (err, data) => {
-            if (err) {
-                result.data = err
-            } else {
+        await Goods.find({ name: goodsName })
+            .then(data => {
                 if (data.length !== 0) {
                     result.data = "该商品名已存在"
                 } else {
                     result.status = REQUEST_RESULT.SUCCESS
                 }
-            }
-        })
+            }).catch(err => {
+                result.data = err
+            })
         return result
     }
     /**
@@ -65,12 +64,12 @@ module.exports = class GoodsDao {
      * @param {*商品编号} goodsId 
      * @param {*图片名称} filename 
      */
-    async updateGoodsImage(goodsId,filename){
+    async updateGoodsImage(goodsId, filename) {
         let result = {
             status: REQUEST_RESULT.FAIL,
             data: null
         }
-        await Goods.updateOne({ _id: goodsId }, { $push: {images: filename} }, { runValidators: true }).then(data => {
+        await Goods.updateOne({ _id: goodsId }, { $push: { images: filename } }, { runValidators: true }).then(data => {
             result.status = REQUEST_RESULT.SUCCESS
             result.data = data
         }).catch(err => {
@@ -98,18 +97,35 @@ module.exports = class GoodsDao {
     }
     /**
      * 获取商品信息列表
-     * @param {*获取商品数量} limit 
+     * @param {*获取商品数量} limit
+     * 
+     * @param {*商品一级类型} types
+     * @param {*商品二级类型} type
+     * @param {*商品状态} status
      */
-    async getGoodsInfo(limit) {
+    async getGoodsInfo(params) {
         let result = {
             status: REQUEST_RESULT.FAIL,
             data: {}
         }
-        await Goods.find({ status: GOODS_STATUS.GROUNGING })
-            .limit(limit)
+        let query = null;
+        if (params.status == GOODS_STATUS.UNDERCARRIAGE) {
+            query = { status: GOODS_STATUS.UNDERCARRIAGE }
+        } else if (params.status == GOODS_STATUS.GROUNGING) {
+            if (!params.types && !params.type) {
+                query = { status: GOODS_STATUS.GROUNGING }
+            } else {
+                query = { $or: [{ types: params.types }, { type: params.type }], status: GOODS_STATUS.GROUNGING }
+            }
+        }
+        const count = await Goods.find(query).countDocuments()
+        await Goods.find(query)
+            .limit(params.limit)
+            .skip(params.skip * params.limit)
             .then(data => {
                 result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
+                result['count'] = count
             }).catch(err => {
                 result.data = err
             })
@@ -119,7 +135,7 @@ module.exports = class GoodsDao {
      * 修改商品集合里商品状态，已下架或已删除
      * @param {*商品id} goodsId 
      */
-    async shelfGoodsInfo(goodsId,status) {
+    async shelfGoodsInfo(goodsId, status) {
         let result = {
             status: REQUEST_RESULT.FAIL,
             data: "下架失败"

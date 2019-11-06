@@ -1,3 +1,4 @@
+const url = require('url')
 const GoodsDao = require('../Dao/GoodsDao')
 const goodsDao = new GoodsDao()
 const OrderDao = require('../Dao/OrderDao')
@@ -6,7 +7,6 @@ const CarDao = require('../Dao/CarDao')
 const carDao = new CarDao()
 const GoodsService = require('../Service/GoodsService')
 const goodsService = new GoodsService(goodsDao,carDao,orderDao)
-
 
 /**
  * 商品上架
@@ -58,9 +58,15 @@ exports.updateGoodsInfo = async (ctx) => {
  * 获取商品信息列表
  */
 exports.getGoodsInfo = async (ctx) => {
-    let limit = new Number(ctx.params.limit)
+    const params = url.parse(ctx.request.url, true).query;
+    const limit = params.limit;
+    const skip = params.skip;
+    const status = params.status;
+    params.limit = new Number(limit);
+    params.skip = new Number(skip);
+    params.status = new Number(status);
     await new Promise(async (resolve) => {
-        let result = await goodsService.getGoodsInfo(limit)
+        let result = await goodsService.getGoodsInfo(params)
         return resolve(result)
     }).then(result => {
         ctx.body = result
