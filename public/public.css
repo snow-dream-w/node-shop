@@ -3,7 +3,7 @@
 body,h1,h2,h3,h4,h5,h6,p,dd{margin:0;}
 ul,ol,dl{margin:0;padding:0;list-style:none;}
 img{border:none;vertical-align:middle;}
-a{text-decoration:none;color:inherit;outline:none;}
+a{text-decoration:none;color:inherit !important;outline:none;}
 body{font:14px/1.5 'Microsoft Yahei',sans-serif;/*sans-serif 是手机默认字体*/}
 
 /*---------------------------------------
@@ -302,6 +302,4 @@ body{font:14px/1.5 'Microsoft Yahei',sans-serif;/*sans-serif 是手机默认字�
 .bgc-a0f{background-color:#a0f;}
 .bgc-0af{background-color:#0af;}
 .bgc-0fa{background-color:#0fa;}
-
-
 

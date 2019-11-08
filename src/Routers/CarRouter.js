@@ -9,7 +9,7 @@ const router = new Router
 router.post("/car/add",user.keepLogin,car.addCarInfo)
 
 //获取购物车商品
-router.get("/car/get",user.keepLogin,car.getCarInfo)
+router.get("/car/get",car.getCarInfo)
 
 //获取购物车商品
 router.del("/car/delete/:id",user.keepLogin,car.deleteCarInfo)

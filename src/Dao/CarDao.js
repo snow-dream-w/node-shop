@@ -53,6 +53,7 @@ module.exports = class CarDao {
                     _id: 1,
                     discount: 1,
                     description: 1,
+                    images: 1,
                     name: 1,
                     price: 1,
                     unit: 1,
