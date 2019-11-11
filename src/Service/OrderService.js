@@ -20,7 +20,7 @@ module.exports = class OrderService {
     }
     /**
      * 创建订单
-     * @param {*对象数组，包括s收货地址编号addressId，商品信息（购物车编号cars，商品编号goodsId和购买数量num）} params
+     * @param {*对象数组，包括收货地址编号addressId，商品信息（购物车编号cars，商品编号goodsId和购买数量num）} params
      * @param {*用户ID} userId 
      */
     async setOrderInfo(params, userId) {
