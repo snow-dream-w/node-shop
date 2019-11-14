@@ -52,6 +52,7 @@ module.exports = class AddressService {
         let result = await this.addressDao.isDefaultAddress(addressId)
         if(result.status === REQUEST_RESULT.SUCCESS){
             //如果是默认地址则返回提示信息
+            result.status = REQUEST_RESULT.FAIL
             return result
         }
         return await this.addressDao.delReceivingAddress(addressId)

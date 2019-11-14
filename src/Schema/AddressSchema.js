@@ -28,18 +28,12 @@ const AddressSchema = new Schema({
     },
     post: {
         type: String,
-        validate: {
-            validator: function(v){
-                return /^[0-9]{4,6}$/.test(v);
-            },
-            message: props => `${props.value} is not a valid,please enter 4-6 number`
-        }
+        default: '000000'
     },
     address: {
-        area: {
-            type: String,
-            required: true
-        },
+        area: [{
+            type: String
+        }],
         details: {
             type: String,
             required: true,
