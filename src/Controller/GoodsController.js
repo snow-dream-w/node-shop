@@ -59,12 +59,17 @@ exports.updateGoodsInfo = async (ctx) => {
  */
 exports.getGoodsInfo = async (ctx) => {
     const params = url.parse(ctx.request.url, true).query;
+    for(let key in params){
+        if(!params[key]){
+            delete params[key]
+        }
+    }
     const limit = params.limit;
     const skip = params.skip;
     const status = params.status;
-    params.limit = new Number(limit);
-    params.skip = new Number(skip);
-    params.status = new Number(status);
+    params.limit = Number.parseInt(limit);
+    params.skip = Number.parseInt(skip);
+    params.status = Number.parseInt(status);
     await new Promise(async (resolve) => {
         let result = await goodsService.getGoodsInfo(params)
         return resolve(result)

@@ -108,20 +108,24 @@ module.exports = class GoodsDao {
             status: REQUEST_RESULT.FAIL,
             data: {}
         }
-        let query = null;
-        if (params.status == GOODS_STATUS.UNDERCARRIAGE) {
-            query = { status: GOODS_STATUS.UNDERCARRIAGE }
-        } else if (params.status == GOODS_STATUS.GROUNGING) {
-            if (!params.types && !params.type) {
-                query = { status: GOODS_STATUS.GROUNGING }
-            } else {
-                query = { $or: [{ types: params.types }, { type: params.type }], status: GOODS_STATUS.GROUNGING }
-            }
-        }
-        const count = await Goods.find(query).countDocuments()
-        await Goods.find(query)
-            .limit(params.limit)
-            .skip(params.skip * params.limit)
+        // let query = null;
+        // if (params.status == GOODS_STATUS.UNDERCARRIAGE) {
+        //     query = { status: GOODS_STATUS.UNDERCARRIAGE }
+        // } else if (params.status == GOODS_STATUS.GROUNGING) {
+        //     if (!params.types && !params.type) {
+        //         query = { status: GOODS_STATUS.GROUNGING }
+        //     } else {
+        //         query = { $or: [{ types: params.types }, { type: params.type }], status: GOODS_STATUS.GROUNGING }
+        //     }
+        // }
+        const limit = params.limit;
+        const skip = params.skip;
+        delete params.limit
+        delete params.skip
+        const count = await Goods.find(params).countDocuments();
+        await Goods.find(params)
+            .limit(limit)
+            .skip(skip * limit)
             .then(data => {
                 result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
