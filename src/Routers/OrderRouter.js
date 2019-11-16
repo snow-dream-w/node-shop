@@ -20,4 +20,7 @@ router.post("/order/cancel",user.keepLogin,order.cancelOrderInfo);
 //删除订单
 router.del("/order/delete/:id",user.keepLogin,order.deleteOrderInfo);
 
+//获取订单详情
+router.get("/order/get/:_id",user.keepLogin,order.getOrderDetail);
+
 module.exports = router

@@ -163,6 +163,13 @@ module.exports = class OrderService {
         return await this.orderDao.queryOrderByStatus(userId, orderStatus)
     }
     /**
+     * 获取订单详情
+     * @param {*订单id} orderId 
+     */
+    async getOrderDetail(orderId) {
+        return await this.orderDao.getOrderDetail(orderId)
+    }
+    /**
      * 取消订单
      * @param {*用户id} userId
      * @param {*订单id} orderId 

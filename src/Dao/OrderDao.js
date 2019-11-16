@@ -66,6 +66,28 @@ module.exports = class OrderDao {
         return result
     }
     /**
+     * 获取订单详情
+     * @param {*订单id} orderId 
+     */
+    async getOrderDetail(orderId){
+        let result = {
+            status: REQUEST_RESULT.FAIL,
+            data: {}
+        }
+        await Order.findOne({ _id: orderId })
+            .then(data => {
+                if (data) {
+                    result.status = REQUEST_RESULT.SUCCESS
+                    result.data = data
+                } else {
+                    result.data = "未查询到信息"
+                }
+            }).catch(err => {
+                result.data = err
+            })
+        return result
+    }
+    /**
      * 取消订单
      * @param {*用户id} userId 
      * @param {*订单id} orderId 

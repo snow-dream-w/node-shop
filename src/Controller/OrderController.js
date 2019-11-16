@@ -43,7 +43,7 @@ exports.settleAccountOrder = async (ctx) => {
  * 查看订单
  */
 exports.queryOrderByStatus = async (ctx) => {
-    //接受参数
+    //接收参数
     const orderStatus = ctx.params.status;
     const userId = ctx.session.id;
 
@@ -76,6 +76,20 @@ exports.deleteOrderInfo = async (ctx) => {
     const orderId = ctx.params.id;
     await new Promise(async (resolve) => {
         let result = await orderService.deleteOrderInfo(orderId)
+        return resolve(result)
+    }).then(result => {
+        ctx.body = result
+    })
+}
+/**
+ * 查看订单详情
+ */
+exports.getOrderDetail = async (ctx) => {
+    //接收参数
+    const orderId = ctx.params._id;
+
+    await new Promise(async (resolve) => {
+        let result = await orderService.getOrderDetail(orderId)
         return resolve(result)
     }).then(result => {
         ctx.body = result
