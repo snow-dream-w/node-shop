@@ -52,7 +52,13 @@ module.exports = class OrderDao {
             status: REQUEST_RESULT.FAIL,
             data: {}
         }
-        await Order.find({ userId: userId, status: orderStatus })
+        let query = {}
+        if(orderStatus){
+            query = { userId: userId, status: orderStatus }
+        } else {
+            query = { userId: userId }
+        }
+        await Order.find(query)
             .then(data => {
                 if (data) {
                     result.status = REQUEST_RESULT.SUCCESS

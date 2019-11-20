@@ -14,7 +14,7 @@ module.exports = class CarService{
      * @param {*购物车信息实例，包括用户ID userId、商品ID goodsId和商品数量num} carInfo 
      */
     async addCarInfo(carInfo){
-        let result =  await this.carDao.addCarInfo(carInfo)
+        let result = await this.carDao.addCarInfo(carInfo)
         if(result.status === REQUEST_RESULT.SUCCESS){
             //更新用户-商品倒查表
             this.recommendDao.saveUserGoods(carInfo.userId, result.data.goodsId, WEIGHT.PUT_CAR)

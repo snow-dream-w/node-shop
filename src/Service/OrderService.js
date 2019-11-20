@@ -1,4 +1,4 @@
-const { REQUEST_RESULT,ORDER_STATUS,DISCOUNT_STATUS,WEIGHT,SIGN } = require('../Utils/status_enum')
+const { REQUEST_RESULT, ORDER_STATUS, DISCOUNT_STATUS, WEIGHT, SIGN } = require('../Utils/status_enum')
 
 module.exports = class OrderService {
     /**
@@ -160,7 +160,15 @@ module.exports = class OrderService {
      * @param {*订单状态} orderStatus 
      */
     async queryOrderByStatus(userId, orderStatus) {
-        return await this.orderDao.queryOrderByStatus(userId, orderStatus)
+        let result = await this.orderDao.queryOrderByStatus(userId, orderStatus)
+        if (result.status === 1) {
+            for (let index = 0; index < result.data.length; index++) {
+                const element = result.data[index];
+                const goodsInfo = await this.carDao.getOrderGoods(element._id)
+                result.data[index].goodsInfo = goodsInfo.data
+            }
+        }
+        return result
     }
     /**
      * 获取订单详情

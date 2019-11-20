@@ -1,6 +1,6 @@
 const Car = require('../Models/CarModel')
 const Goods = require('../Models/GoodsModel')
-const { REQUEST_RESULT,CAR_STATUS,GOODS_STATUS,CAR_MAX_NUM } = require('../Utils/status_enum')
+const { REQUEST_RESULT, CAR_STATUS, GOODS_STATUS, CAR_MAX_NUM } = require('../Utils/status_enum')
 
 module.exports = class CarDao {
     /**
@@ -77,14 +77,7 @@ module.exports = class CarDao {
             data: null
         }
         await Car.find({ orderId: orderId, status: CAR_STATUS.SETTLE })
-            .populate({
-                path: 'goodsId',
-                select: {
-                    _id: 1,
-                    name: 1,
-                    inventoryNum: 1
-                }
-            }).then(data => {
+            .populate('goodsId').then(data => {
                 result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
             }).catch(err => {
@@ -122,7 +115,7 @@ module.exports = class CarDao {
      * @param {*订单编号} orderId 
      */
     async updateCarInfo(carId, status, orderId) {
-        return await Car.findByIdAndUpdate(carId, { $set: { status, orderId } },{new: true}).exec()
+        return await Car.findByIdAndUpdate(carId, { $set: { status, orderId } }, { new: true }).exec()
     }
     /**
      * 查询已生成及已支付未发货的订单是否在购物车中
@@ -133,14 +126,14 @@ module.exports = class CarDao {
             status: REQUEST_RESULT.FAIL,
             data: null
         }
-        await Car.find({orderId:orderId})
+        await Car.find({ orderId: orderId })
             .then(data => {
                 result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
             }).catch(err => {
                 result.data = err
             })
-            return result
+        return result
     }
 
 }

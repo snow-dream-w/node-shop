@@ -6,6 +6,7 @@ const OrderSchema = new Schema ({
         type: ObjectId,
         required: true
     },
+    goodsInfo: Array,
     name: {
         type: String,
         required: true,

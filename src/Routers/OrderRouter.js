@@ -12,7 +12,7 @@ router.post("/order/set",user.keepLogin,order.setOrderInfo)
 router.post("/order/account",user.keepLogin,order.settleAccountOrder)
 
 //订单列表
-router.get("/order/orderInfo/:status",user.keepLogin,order.queryOrderByStatus);
+router.get("/order/orderInfo/:status?",user.keepLogin,order.queryOrderByStatus);
 
 //取消订单
 router.post("/order/cancel",user.keepLogin,order.cancelOrderInfo);
