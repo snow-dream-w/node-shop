@@ -122,7 +122,8 @@ module.exports = class OrderDao {
             status: REQUEST_RESULT.FAIL,
             data: "删除失败"
         }
-        await Order.findOne({ _id: orderId, status: status })
+        console.log(orderId)
+        await Order.findOne({ _id: orderId, $or:[{status: ORDER_STATUS.CANCEL}, {status: ORDER_STATUS.COMPLETE}] })
             .then(data => {
                 result.status = REQUEST_RESULT.SUCCESS
                 result.data = data

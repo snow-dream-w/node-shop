@@ -1,5 +1,5 @@
 const Koa = require('koa');
-const {join} = require('path');
+const { join } = require('path');
 const static = require('koa-static');
 const body = require('koa-body');
 const logger = require('koa-logger');
@@ -37,12 +37,23 @@ CONFIG = {
     rolling: true
 }
 //配置session
-app.use(session(CONFIG,app))
+app.use(session(CONFIG, app))
 
 //配置静态资源
 app.use(static(join(__dirname, "public")))
     .use(body())//监听所有post
-    .use(cors())//解决跨域问题
+    .use(cors({
+        // 跨域的域名，可以设置为*也可以设置为具体的域，其中，*表示全部
+        // origin: '*',
+        exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
+        // 预检请求的有效期，单位为秒
+        maxAge: 5,
+        // 为服务端标识浏览器请求CORS时是否可以附带身份凭证，对于附带身份凭证的请求，
+        // 服务器不得设置 Access-Control-Allow-Origin 的值为“*”
+        credentials: true,
+        allowMethods: ['GET', 'POST', 'DELETE'], //设置允许的HTTP请求类型
+        allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    }))//解决跨域问题
 
 //配置路由,要放在配置静态资源后
 app.use(userRouter.routes()).use(userRouter.allowedMethods())
@@ -55,34 +66,34 @@ app.use(carRouter.routes()).use(carRouter.allowedMethods())
 
 //注册日志模块，控制台打印日志
 app.use(logger())
-app.listen('3000',()=>{
+app.listen('3000', () => {
     console.log('项目启动成功');
 });
 
 // 创建管理员
-(async function admin(){
+(async function admin() {
     const User = require('./src/Models/UserModel')
     const encrypt = require('./src/Utils/encrypt')
-    await User.find({telephone: "admin"})
+    await User.find({ telephone: "admin" })
         .then(data => {
-            if(data.length === 0) {
+            if (data.length === 0) {
                 new User({
                     telephone: '15824795534',
                     name: '系统管理员',
                     password: encrypt('123456'),
                     role: 666
                 }).save()
-                .then(data => {
-                    User.updateOne({telephone: '15824795534'},{$set: {telephone: 'admin'}},{new: true},(err,data)=>{
-                        if(err){
-                            console.log("管理员信息检查失败");
-                        }else{
-                            console.log("管理员信息创建成功");
-                        }
+                    .then(data => {
+                        User.updateOne({ telephone: '15824795534' }, { $set: { telephone: 'admin' } }, { new: true }, (err, data) => {
+                            if (err) {
+                                console.log("管理员信息检查失败");
+                            } else {
+                                console.log("管理员信息创建成功");
+                            }
+                        })
+                    }).catch(err => {
+                        console.log("管理员信息检查失败");
                     })
-                }).catch(err => {
-                    console.log("管理员信息检查失败");
-                })
             } else {
                 console.log('管理员已存在');
             }

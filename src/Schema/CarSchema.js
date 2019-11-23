@@ -1,4 +1,5 @@
 const { Schema } = require('../Utils/connect');
+const { CAR_STATUS } = require('../Utils/status_enum')
 const ObjectId = Schema.Types.ObjectId;
 
 const CarSchema = new Schema({
@@ -14,7 +15,7 @@ const CarSchema = new Schema({
     },
     status: {
         type: Number,
-        default: 1,
+        default: CAR_STATUS.PUT,
         validate: {
             validator: function (v) {
                 return /^[0-9]{1,1}$/.test(v);

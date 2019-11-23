@@ -4,7 +4,9 @@ const ADDRESS_STATUS = {
 }
 const CAR_STATUS = {
     PUT : 1,
-    SETTLE : 2
+    SETTLE : 2,
+    COMMENT : 3,
+    AGAINSTCOMMENT : 4
 }
 const GOODS_STATUS = {
     UNDERCARRIAGE : 0,

@@ -175,7 +175,10 @@ module.exports = class OrderService {
      * @param {*订单id} orderId 
      */
     async getOrderDetail(orderId) {
-        return await this.orderDao.getOrderDetail(orderId)
+        let result = await this.orderDao.getOrderDetail(orderId)
+        const goodsInfo = await this.carDao.getOrderGoods(orderId)
+        result.data.goodsInfo = goodsInfo.data
+        return result
     }
     /**
      * 取消订单
@@ -191,6 +194,6 @@ module.exports = class OrderService {
      * @param {*订单状态} status 
      */
     async deleteOrderInfo(orderId) {
-        return await this.orderDao.deleteOrderInfo(orderId, ORDER_STATUS.CANCEL)
+        return await this.orderDao.deleteOrderInfo(orderId)
     }
 }

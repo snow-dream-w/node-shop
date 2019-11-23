@@ -1,4 +1,5 @@
 const { Schema } = require('../Utils/connect');
+const { CAR_STATUS } = require('../Utils/status_enum')
 const ObjectId = Schema.Types.ObjectId;
 
 const CommentSchema = new Schema({
@@ -23,13 +24,6 @@ const CommentSchema = new Schema({
     },
     grade: {
         type: Number,
-        required: true,
-        validate: {
-            validator: function (v) {
-                return /^[0-5]{1,1}$/.test(v);
-            },
-            message: props => `${props.value} is not a valid value`
-        }
     },
     niceNum: {
         type: Number,
@@ -59,6 +53,10 @@ const CommentSchema = new Schema({
     goodsId: {
         type: ObjectId,
         required: true
+    },
+    carsId: {
+        type: ObjectId,
+        required: true,
     }
 }, {
         versionKey: false,
@@ -87,8 +85,9 @@ CommentSchema.post("remove", doc => {
  */
 CommentSchema.post("save", doc => {
     const Goods = require('../Models/GoodsModel')
-    const { goodsId: goodsId } = doc
-
+    const Car = require('../Models/CaeModel')
+    const { goodsId: goodsId, carsId } = doc
+    Car.findByIdAndUpdate(carsId,{$set: {status: CAR_STATUS.COMMENT}}).exec()
     Goods.findByIdAndUpdate(goodsId, { $inc: { commentNum: 1 } }).exec()
 })
 
