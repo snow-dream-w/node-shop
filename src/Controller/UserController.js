@@ -232,6 +232,9 @@ exports.logout = async (ctx) => {
     ctx.cookies.set("role", null, {
         maxAge: 0
     })
+    ctx.cookies.set("avatar", null, {
+        maxAge: 0
+    })
     ctx.body = {
         status: 1
     }

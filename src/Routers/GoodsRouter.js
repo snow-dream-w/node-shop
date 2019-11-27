@@ -11,7 +11,7 @@ const router = new Router
 router.post("/goods/add",goods.addGoodsInfo);
 
 //修改商品信息
-router.post("/goods/update",user.keepLogin,goods.updateGoodsInfo);
+router.post("/goods/update",goods.updateGoodsInfo);
 
 //获取商品信息
 router.get("/goods/query",goods.getGoodsInfo);
@@ -23,7 +23,7 @@ router.post("/goods/shelves",goods.shelfGoodsInfo);
 router.get("/goods/goodsDetail/:id",goods.getGoodsDetail);
 
 //删除已下架商品
-router.post("/goods/delete",user.keepLogin,goods.deleteGoodsInfo);
+router.post("/goods/delete",goods.deleteGoodsInfo);
 
 //更新商品图片
 router.post("/goods/upload_goods_image",upload_goods_image.single("file"),goods.updateGoodsImage);
