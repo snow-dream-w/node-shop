@@ -12,6 +12,7 @@ const RecommendDao = require('../Dao/RecommendDao')
 const recommendDao = new RecommendDao()
 const OrderService = require('../Service/OrderService')
 const orderService = new OrderService(orderDao, goodsDao, addressDao, carDao, userDao, recommendDao)
+const { REQUEST_RESULT } = require('../Utils/status_enum')
 
 /**
  * 创建订单
@@ -40,7 +41,7 @@ exports.settleAccountOrder = async (ctx) => {
     })
 }
 /**
- * 查看订单
+ * 用户查看订单列表
  */
 exports.queryOrderByStatus = async (ctx) => {
     //接收参数
@@ -90,6 +91,27 @@ exports.getOrderDetail = async (ctx) => {
 
     await new Promise(async (resolve) => {
         let result = await orderService.getOrderDetail(orderId)
+        return resolve(result)
+    }).then(result => {
+        ctx.body = result
+    })
+}
+/**
+ * 管理员查看订单列表
+ */
+exports.managerGetOrder = async (ctx) => {
+    //接收参数
+    const orderStatus = ctx.params.status;
+    const role = ctx.session.role;
+    if (role !== '666') {
+        ctx.body = {
+            status: REQUEST_RESULT.FAIL,
+            data: "权限错误"
+        }
+        return;
+    }
+    await new Promise(async (resolve) => {
+        let result = await orderService.managerGetOrder(orderStatus)
         return resolve(result)
     }).then(result => {
         ctx.body = result

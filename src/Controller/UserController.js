@@ -192,7 +192,7 @@ exports.keepLogin = async (ctx, next) => {
 }
 
 /**
- * 保持登录状态
+ * 验证登录状态
  */
 exports.checkLogin = async (ctx, next) => {
     if (ctx.session.isNew) {
@@ -211,7 +211,7 @@ exports.checkLogin = async (ctx, next) => {
     }
     ctx.body = {
         status: REQUEST_RESULT.SUCCESS,
-        data: "已登录"
+        data: ctx.session.role
     }
 }
 

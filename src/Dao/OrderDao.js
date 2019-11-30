@@ -1,5 +1,5 @@
 const Order = require('../Models/OrderModel');
-const { REQUEST_RESULT,ORDER_STATUS } = require('../Utils/status_enum')
+const { REQUEST_RESULT, ORDER_STATUS } = require('../Utils/status_enum')
 
 module.exports = class OrderDao {
     /**
@@ -43,7 +43,7 @@ module.exports = class OrderDao {
         return result
     }
     /**
-     * 查看订单列表
+     * 用户查看订单列表
      * @param {*用户id} userId
      * @param {*订单状态} orderStatus 
      */
@@ -53,7 +53,7 @@ module.exports = class OrderDao {
             data: {}
         }
         let query = {}
-        if(orderStatus){
+        if (orderStatus) {
             query = { userId: userId, status: orderStatus }
         } else {
             query = { userId: userId }
@@ -75,7 +75,7 @@ module.exports = class OrderDao {
      * 获取订单详情
      * @param {*订单id} orderId 
      */
-    async getOrderDetail(orderId){
+    async getOrderDetail(orderId) {
         let result = {
             status: REQUEST_RESULT.FAIL,
             data: {}
@@ -123,7 +123,7 @@ module.exports = class OrderDao {
             data: "删除失败"
         }
         console.log(orderId)
-        await Order.findOne({ _id: orderId, $or:[{status: ORDER_STATUS.CANCEL}, {status: ORDER_STATUS.COMPLETE}] })
+        await Order.findOne({ _id: orderId, $or: [{ status: ORDER_STATUS.CANCEL }, { status: ORDER_STATUS.COMPLETE }] })
             .then(data => {
                 result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
@@ -157,18 +157,36 @@ module.exports = class OrderDao {
     /**
      * 查询已生成未支付的订单以及已结算未发货的订单
      */
-    async queryPaymentedOreder(){
+    async queryPaymentedOreder() {
         let result = {
-            status : REQUEST_RESULT.FAIL,
-            data : {}
+            status: REQUEST_RESULT.FAIL,
+            data: {}
         }
-        await Order.find({$or:[{status:ORDER_STATUS.ESTABLISH},{status:ORDER_STATUS.SETTLE}]})
-        .then(data =>{
+        await Order.find({ $or: [{ status: ORDER_STATUS.ESTABLISH }, { status: ORDER_STATUS.SETTLE }] })
+            .then(data => {
                 result.status = REQUEST_RESULT.SUCCESS
                 result.data = data
-        }).catch(err =>{
-            result.data = err
-        })
+            }).catch(err => {
+                result.data = err
+            })
+        return result
+    }
+    /**
+     * 管理员查看订单列表
+     * @param {*订单状态} orderStatus 
+     */
+    async managerGetOrder(orderStatus) {
+        let result = {
+            status: REQUEST_RESULT.FAIL,
+            data: []
+        }
+        await Order.find({ status: orderStatus })
+            .then(data => {
+                result.status = REQUEST_RESULT.SUCCESS
+                result.data = data
+            }).catch(err => {
+                result.data = err
+            })
         return result
     }
 }

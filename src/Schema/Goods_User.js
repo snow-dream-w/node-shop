@@ -10,6 +10,16 @@ const Goods_User = new Schema({
         type: ObjectId,
         required: true
     },
+    sex: {
+        type: String,
+        default: '男',
+        validate: {
+            validator: function (v) {
+                return /^[男女]{1,1}$/.test(v);
+            },
+            message: props => `${props.value} is not a valid value`
+        }
+    },
     weight:  {
         type: Number,
         required: true

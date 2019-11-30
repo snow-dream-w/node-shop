@@ -155,7 +155,7 @@ module.exports = class OrderService {
         }
     }
     /**
-     * 查看订单列表
+     * 用户查看订单列表
      * @param {*用户id} userId 
      * @param {*订单状态} orderStatus 
      */
@@ -195,5 +195,20 @@ module.exports = class OrderService {
      */
     async deleteOrderInfo(orderId) {
         return await this.orderDao.deleteOrderInfo(orderId)
+    }
+    /**
+     * 管理员查看订单列表
+     * @param {*订单状态} orderStatus 
+     */
+    async managerGetOrder(orderStatus) {
+        let result = await this.orderDao.managerGetOrder(orderStatus)
+        if (result.status === 1) {
+            for (let index = 0; index < result.data.length; index++) {
+                const element = result.data[index];
+                const goodsInfo = await this.carDao.getOrderGoods(element._id)
+                result.data[index].goodsInfo = goodsInfo.data
+            }
+        }
+        return result
     }
 }

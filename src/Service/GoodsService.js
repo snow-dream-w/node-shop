@@ -5,11 +5,13 @@ module.exports = class GoodsService {
      * @param {*GoodsDao实例} goodsDao 
      * @param {*CarsDao实例} carDao 
      * @param {*OrderDao实例} orderDao 
+     * @param {*RecommendDao} recommendDao 
      */
-    constructor(goodsDao, carDao, orderDao) {
+    constructor(goodsDao, carDao, orderDao, recommendDao) {
         this.goodsDao = goodsDao;
         this.carDao = carDao;
         this.orderDao = orderDao;
+        this.recommendDao = recommendDao;
     }
 
     /**
@@ -106,7 +108,14 @@ module.exports = class GoodsService {
      * 删除已下架商品
      * @param {*商品id} goodsId 
      */
-    async deleteGoodsInfo(goodsId ){
+    async deleteGoodsInfo(goodsId){
         return await this.goodsDao.shelfGoodsInfo(goodsId,GOODS_STATUS.DELETE)
+    }
+    /**
+     * 获取倒查表商品
+     * @param {用户id} userId 
+     */
+    async getRecommendGoods_S(){
+        return await this.recommendDao.getUserGoodsInfo()
     }
 }

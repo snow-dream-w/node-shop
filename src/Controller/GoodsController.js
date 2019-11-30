@@ -5,8 +5,11 @@ const OrderDao = require('../Dao/OrderDao')
 const orderDao = new OrderDao()
 const CarDao = require('../Dao/CarDao')
 const carDao = new CarDao()
+const RecommendDao = require('../Dao/RecommendDao')
+const recommendDao = new RecommendDao()
 const GoodsService = require('../Service/GoodsService')
-const goodsService = new GoodsService(goodsDao,carDao,orderDao)
+const goodsService = new GoodsService(goodsDao,carDao,orderDao,recommendDao)
+const RecommendService = require('../Service/RecommendService')
 
 /**
  * 商品上架
@@ -106,8 +109,10 @@ exports.getGoodsDetail = async (ctx) => {
         ctx.body = result
     })
 }
-
-exports.deleteGoodsInfo = async (ctx) =>{
+/**
+ * 删除商品
+ */
+exports.deleteGoodsInfo = async (ctx) => {
     //接受参数
     const goods = ctx.request.body
     const goodsId = goods._id
@@ -117,5 +122,30 @@ exports.deleteGoodsInfo = async (ctx) =>{
         return resolve(result)
     }).then(result =>{
         ctx.body = result
+    })
+}
+/**
+ * 获取推荐商品
+ */
+exports.getRecommendGoods = async (ctx) => {
+    const userId = ctx.session.id
+    await new Promise(async (resolve) => {
+        let data = await goodsService.getRecommendGoods_S()
+        // 转化数据格式
+        data = JSON.parse(JSON.stringify(data))
+        const recommendService = new RecommendService(data, userId, 2)
+        const arrayGoods = recommendService.start()
+        console.log(arrayGoods)
+        let result = []
+        for(let goodsId of arrayGoods.values()){
+            let goodsInfo = await goodsService.getGoodsDetail(goodsId)
+            result.push(goodsInfo.data)
+        }
+        return resolve(result)
+    }).then(result => {
+        ctx.body = {
+            status: 1,
+            data: result
+        }
     })
 }

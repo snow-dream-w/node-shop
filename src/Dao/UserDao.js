@@ -20,10 +20,10 @@ module.exports = class UserDao {
                         result.status = REQUEST_RESULT.SUCCESS
                         result.data = data[0]
                     } else {
-                        result.data = "密码错误"
+                        result.data = "账号或密码输入错误"
                     }
                 } else {
-                    result.data = "账号不存在"
+                    result.data = "账号或密码输入错误"
                 }
             }).catch(err => {
                 result.data = err
