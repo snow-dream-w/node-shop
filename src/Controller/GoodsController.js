@@ -125,6 +125,19 @@ exports.deleteGoodsInfo = async (ctx) => {
     })
 }
 /**
+ * 获取下架商品
+ */
+exports.getShelfGoods = async (ctx) => {
+    //接受参数
+    const status = ctx.params.status;
+    await new Promise(async (resolve) => {
+        let result = await goodsService.getShelfGoods(status)
+        return resolve(result)
+    }).then(result => {
+        ctx.body = result
+    })
+}
+/**
  * 获取推荐商品
  */
 exports.getRecommendGoods = async (ctx) => {

@@ -118,4 +118,11 @@ module.exports = class GoodsService {
     async getRecommendGoods_S(){
         return await this.recommendDao.getUserGoodsInfo()
     }
+    /**
+     * 获取下架商品
+     * @param {商品状态} status 
+     */
+    async getShelfGoods(status){
+        return await this.goodsDao.getShelfGoods(status)
+    }
 }

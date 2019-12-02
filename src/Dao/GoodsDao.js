@@ -194,5 +194,23 @@ module.exports = class GoodsDao {
             })
         return result
     }
+    /**
+     * 获取下架商品
+     * @param {商品状态} status 
+     */
+    async getShelfGoods(status) {
+        let result = {
+            status: REQUEST_RESULT.FAIL,
+            data: {}
+        }
+        await Goods.find({ status: status })
+            .then(data => {
+                result.status = REQUEST_RESULT.SUCCESS
+                result.data = data
+            }).catch(err => {
+                result.data = err
+            })
+        return result
+    }
 }
 
