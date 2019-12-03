@@ -189,4 +189,22 @@ module.exports = class OrderDao {
             })
         return result
     }
+    /**
+     * 管理员确认发货
+     * @param {*订单ID} orderId 
+     */
+    async confirmSendGoods(orderId) {
+        let result = {
+            status: REQUEST_RESULT.FAIL,
+            data: undefined
+        }
+        await Order.updateOne({ _id: orderId },{$set: {status: ORDER_STATUS.TRANSPORT}})
+            .then(data => {
+                result.status = REQUEST_RESULT.SUCCESS
+                result.data = data
+            }).catch(err => {
+                result.data = err
+            })
+        return result
+    }
 }

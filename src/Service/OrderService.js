@@ -211,4 +211,11 @@ module.exports = class OrderService {
         }
         return result
     }
+    /**
+     * 管理员确认发货
+     * @param {*订单ID} orderId 
+     */
+    async confirmSendGoods(orderId) {
+        return await this.orderDao.confirmSendGoods(orderId)
+    }
 }

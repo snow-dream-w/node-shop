@@ -51,7 +51,7 @@ app.use(static(join(__dirname, "public")))
         // 为服务端标识浏览器请求CORS时是否可以附带身份凭证，对于附带身份凭证的请求，
         // 服务器不得设置 Access-Control-Allow-Origin 的值为“*”
         credentials: true,
-        allowMethods: ['GET', 'POST', 'DELETE'], //设置允许的HTTP请求类型
+        allowMethods: ['GET', 'POST', 'DELETE', 'PUT'], //设置允许的HTTP请求类型
         allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
     }))//解决跨域问题
 

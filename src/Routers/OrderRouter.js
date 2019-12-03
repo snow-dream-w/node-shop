@@ -26,4 +26,7 @@ router.del("/order/delete/:id",user.keepLogin,order.deleteOrderInfo);
 //获取订单详情
 router.get("/order/get/:_id",user.keepLogin,order.getOrderDetail);
 
+//确认发货
+router.put("/order/sending",user.keepLogin,order.confirmSendGoods);
+
 module.exports = router

@@ -117,3 +117,15 @@ exports.managerGetOrder = async (ctx) => {
         ctx.body = result
     })
 }
+/**
+ * 确认发货
+ */
+exports.confirmSendGoods = async (ctx) => {
+    const orderId = ctx.request.body.orderId
+    await new Promise(async (resolve) => {
+        let result = await orderService.confirmSendGoods(orderId)
+        return resolve(result)
+    }).then(result => {
+        ctx.body = result
+    })
+}
