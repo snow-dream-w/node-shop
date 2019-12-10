@@ -67,10 +67,9 @@ const UserSchema = new Schema({
             message: props => `${props.value} is not a valid`
         }
     },
-    perference: Array,
     role: {
         type: String,
-        default: 1
+        default: '1'
     }
 }, {
     versionKey: false,

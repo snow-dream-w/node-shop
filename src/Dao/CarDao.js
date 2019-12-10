@@ -76,7 +76,7 @@ module.exports = class CarDao {
             status: REQUEST_RESULT.FAIL,
             data: null
         }
-        await Car.find({ orderId: orderId, status: CAR_STATUS.SETTLE })
+        await Car.find({ orderId: orderId })
             .populate('goodsId').then(data => {
                 result.status = REQUEST_RESULT.SUCCESS
                 result.data = data

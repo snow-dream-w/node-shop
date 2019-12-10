@@ -192,13 +192,14 @@ module.exports = class OrderDao {
     /**
      * 管理员确认发货
      * @param {*订单ID} orderId 
+     * @param {*订单状态码} status
      */
-    async confirmSendGoods(orderId) {
+    async confirmSendReceiving(orderId, status) {
         let result = {
             status: REQUEST_RESULT.FAIL,
             data: undefined
         }
-        await Order.updateOne({ _id: orderId },{$set: {status: ORDER_STATUS.TRANSPORT}})
+        await Order.updateOne({ _id: orderId },{$set: {status: status}})
             .then(data => {
                 result.status = REQUEST_RESULT.SUCCESS
                 result.data = data

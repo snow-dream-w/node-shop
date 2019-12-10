@@ -1,4 +1,4 @@
-const { REQUEST_RESULT,GOODS_STATUS } = require('../Utils/status_enum')
+const { REQUEST_RESULT, GOODS_STATUS } = require('../Utils/status_enum')
 module.exports = class GoodsService {
     /**
      * 构造函数
@@ -46,8 +46,8 @@ module.exports = class GoodsService {
      * @param {*商品编号} goodsId 
      * @param {*图片名称} filename 
      */
-    async updateGoodsImage(goodsId,filename){
-        return await this.goodsDao.updateGoodsImage(goodsId,filename)
+    async updateGoodsImage(goodsId, filename) {
+        return await this.goodsDao.updateGoodsImage(goodsId, filename)
     }
     /**
      * 修改商品信息
@@ -108,21 +108,55 @@ module.exports = class GoodsService {
      * 删除已下架商品
      * @param {*商品id} goodsId 
      */
-    async deleteGoodsInfo(goodsId){
-        return await this.goodsDao.shelfGoodsInfo(goodsId,GOODS_STATUS.DELETE)
+    async deleteGoodsInfo(goodsId) {
+        return await this.goodsDao.shelfGoodsInfo(goodsId, GOODS_STATUS.DELETE)
     }
     /**
      * 获取倒查表商品
      * @param {用户id} userId 
      */
-    async getRecommendGoods_S(){
+    async getRecommendGoods_S() {
         return await this.recommendDao.getUserGoodsInfo()
     }
     /**
      * 获取下架商品
      * @param {商品状态} status 
      */
-    async getShelfGoods(status){
+    async getShelfGoods(status) {
         return await this.goodsDao.getShelfGoods(status)
+    }
+    /**
+     * 获取热门商品
+     * @param {*限制数量} limit 
+     */
+    async getHotGoods(limit) {
+        const arrayGoods = await this.recommendDao.getHotGoods(limit)
+        let result = []
+        for (let goods of arrayGoods.values()) {
+            let goodsInfo = await this.goodsDao.getGoodsDetail(goods._id)
+            result.push(goodsInfo.data)
+        }
+        return {
+            status: REQUEST_RESULT.SUCCESS,
+            data: result
+        }
+    }
+    /**
+     * 获取用户初始推荐
+     * @param {*限制数量} limit 
+     * @param {*用户性别} sex 
+     */
+    async getInitialRecommend(limit, sex) {
+        const arrayGoods = await this.recommendDao.getInitialRecommend(limit, sex)
+        let result = []
+        for (let goods of arrayGoods.values()) {
+            let goodsInfo = await this.goodsDao.getGoodsDetail(goods._id)
+            result.push(goodsInfo.data)
+        }
+        return {
+            status: REQUEST_RESULT.SUCCESS,
+            data: result,
+            count: limit
+        }
     }
 }

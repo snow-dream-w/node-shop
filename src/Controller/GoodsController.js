@@ -1,4 +1,5 @@
 const url = require('url')
+const _ = require('lodash')
 const GoodsDao = require('../Dao/GoodsDao')
 const goodsDao = new GoodsDao()
 const OrderDao = require('../Dao/OrderDao')
@@ -8,7 +9,7 @@ const carDao = new CarDao()
 const RecommendDao = require('../Dao/RecommendDao')
 const recommendDao = new RecommendDao()
 const GoodsService = require('../Service/GoodsService')
-const goodsService = new GoodsService(goodsDao,carDao,orderDao,recommendDao)
+const goodsService = new GoodsService(goodsDao, carDao, orderDao, recommendDao)
 const RecommendService = require('../Service/RecommendService')
 
 /**
@@ -32,8 +33,8 @@ exports.updateGoodsImage = async (ctx) => {
     const goodsId = ctx.request.body.goodsId
     const filename = '/goods_image/' + ctx.req.file.filename
     await new Promise(async (resolve) => {
-        let result = await goodsService.updateGoodsImage(goodsId,filename)
-        if(result.status === 1){
+        let result = await goodsService.updateGoodsImage(goodsId, filename)
+        if (result.status === 1) {
             result.data = filename
         }
         return resolve(result)
@@ -62,8 +63,8 @@ exports.updateGoodsInfo = async (ctx) => {
  */
 exports.getGoodsInfo = async (ctx) => {
     const params = url.parse(ctx.request.url, true).query;
-    for(let key in params){
-        if(!params[key]){
+    for (let key in params) {
+        if (!params[key]) {
             delete params[key]
         }
     }
@@ -83,7 +84,7 @@ exports.getGoodsInfo = async (ctx) => {
 /**
  * 商品下架
  */
-exports.shelfGoodsInfo = async (ctx) =>{
+exports.shelfGoodsInfo = async (ctx) => {
     //接受参数
     const goods = ctx.request.body
     const goodsId = goods._id
@@ -91,7 +92,7 @@ exports.shelfGoodsInfo = async (ctx) =>{
     await new Promise(async (resolve) => {
         let result = await goodsService.shelfGoodsInfo(goodsId)
         return resolve(result)
-    }).then(result =>{
+    }).then(result => {
         ctx.body = result
     })
 }
@@ -120,7 +121,7 @@ exports.deleteGoodsInfo = async (ctx) => {
     await new Promise(async (resolve) => {
         let result = await goodsService.deleteGoodsInfo(goodsId)
         return resolve(result)
-    }).then(result =>{
+    }).then(result => {
         ctx.body = result
     })
 }
@@ -142,23 +143,58 @@ exports.getShelfGoods = async (ctx) => {
  */
 exports.getRecommendGoods = async (ctx) => {
     const userId = ctx.session.id
+    const sex = ctx.session.sex
+    // 获取参数
+    const params = url.parse(ctx.request.url, true).query;
+    const limit = params.limit;
+    const page = params.page;
+    params.limit = Number.parseInt(limit);
+    params.page = Number.parseInt(page);
+    
     await new Promise(async (resolve) => {
         let data = await goodsService.getRecommendGoods_S()
         // 转化数据格式
         data = JSON.parse(JSON.stringify(data))
-        const recommendService = new RecommendService(data, userId, 2)
-        const arrayGoods = recommendService.start()
-        console.log(arrayGoods)
-        let result = []
-        for(let goodsId of arrayGoods.values()){
-            let goodsInfo = await goodsService.getGoodsDetail(goodsId)
-            result.push(goodsInfo.data)
+
+        //判断是否为新用户
+        const goods = _.filter(data, obj => {
+            return obj.userId === userId
+        })
+        if (goods.length === 0) {
+            //新用户，没有购买操作,执行以下
+            let result = await this.goodsService.getInitialRecommend(params.limit, sex)
+            ctx.body = result
+            return
+        } else {
+            const recommendService = new RecommendService(data, userId, 2)
+            const arrayGoods = recommendService.start()
+            let result = []
+            for (let goodsId of arrayGoods.values()) {
+                let goodsInfo = await goodsService.getGoodsDetail(goodsId)
+                result.push(goodsInfo.data)
+            }
+            // 记录总数量
+            const count = result.length
+            // 分页切割
+            return resolve({data: result.splice((params.page-1)*params.limit, params.limit),count: count})
         }
-        return resolve(result)
-    }).then(result => {
+    }).then((data) => {
         ctx.body = {
             status: 1,
-            data: result
+            data: data.data,
+            count: data.count
         }
+    })
+}
+/**
+ * 获取热门商品
+ */
+exports.getHotGoods = async (ctx) => {
+    const limit = Number(ctx.params.limit)
+    await new Promise(async (resolve) => {
+        const result = await goodsService.getHotGoods(limit)
+        resolve(result)
+    }).then(data => {
+        ctx.body = data
     })
 }

@@ -34,6 +34,9 @@ router.get("/goods/shelf/:status", user.keepLogin, goods.getShelfGoods);
 //获取推荐商品
 router.get("/goods/recommend/user", user.keepLogin, goods.getRecommendGoods);
 
+//获取热门商品
+router.get("/goods/hot/:limit", goods.getHotGoods)
+
 //移除商品图片
 router.post("/goods/dropImage",async ctx => {
     let result = {

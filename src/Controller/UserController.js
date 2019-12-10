@@ -20,7 +20,7 @@ exports.registerUserAccount = async (ctx) => {
     user['busNum'] = 0
 
     //发起保存请求
-    await new Promise(function(resolve) {
+    await new Promise(function (resolve) {
         let result = userService.registerUserAccount(user)
         return resolve(result)
     }).then(result => {
@@ -38,8 +38,8 @@ exports.loginUserAccount = async (ctx) => {
     const password = user.password
     //查找数据
     await new Promise(async (resolve, reject) => {
-        let result = await userService.loginUserAccount(userId,password)
-        if(result.status === REQUEST_RESULT.FAIL){
+        let result = await userService.loginUserAccount(userId, password)
+        if (result.status === REQUEST_RESULT.FAIL) {
             reject(result.data)
         }
         resolve(result.data)
@@ -90,7 +90,8 @@ exports.loginUserAccount = async (ctx) => {
         ctx.session = {
             uid: data.telephone,
             role: data.role,
-            id: data._id
+            id: data._id,
+            sex: data.sex
         }
         ctx.body = {
             status: 1,
@@ -133,7 +134,7 @@ exports.uploadUserAvatar = async (ctx) => {
         // signed: false//默认是true
     })
     await new Promise(resolve => {
-        let result = userService.uploadUserAvatar(userId,avatarPath)
+        let result = userService.uploadUserAvatar(userId, avatarPath)
         resolve(result)
     }).then(data => {
         ctx.body = data
@@ -148,7 +149,7 @@ exports.editUserInfo = async (ctx) => {
     //取出参数
     const info = ctx.request.body
     await new Promise(resolve => {
-        let result = userService.editUserInfo(userId,info)
+        let result = userService.editUserInfo(userId, info)
         resolve(result)
     }).then(data => {
         ctx.body = data
@@ -163,7 +164,7 @@ exports.editUserPassword = async (ctx) => {
     //取出参数
     const pwd = ctx.request.body
     await new Promise(resolve => {
-        let result = userService.editUserPassword(userId,pwd)
+        let result = userService.editUserPassword(userId, pwd)
         resolve(result)
     }).then(data => {
         ctx.body = data
@@ -176,12 +177,10 @@ exports.editUserPassword = async (ctx) => {
 exports.keepLogin = async (ctx, next) => {
     if (ctx.session.isNew) {
         if (ctx.cookies.get("username")) {
-            ctx.session = {
-                uid: ctx.cookies.get('uid'),
-                role: ctx.cookies.get('role'),
-                id: ctx.cookies.get('id')
-            }
-        } else{
+            ctx.session.uid = ctx.cookies.get('uid')
+            ctx.session.role = ctx.cookies.get('role')
+            ctx.sessionid = ctx.cookies.get('id')
+        } else {
             return ctx.body = {
                 status: REQUEST_RESULT.FAIL,
                 data: "未登录"
@@ -197,12 +196,10 @@ exports.keepLogin = async (ctx, next) => {
 exports.checkLogin = async (ctx, next) => {
     if (ctx.session.isNew) {
         if (ctx.cookies.get("username")) {
-            ctx.session = {
-                uid: ctx.cookies.get('uid'),
-                role: ctx.cookies.get('role'),
-                id: ctx.cookies.get('id')
-            }
-        } else{
+            ctx.session.uid = ctx.cookies.get('uid')
+            ctx.session.role = ctx.cookies.get('role')
+            ctx.sessionid = ctx.cookies.get('id')
+        } else {
             return ctx.body = {
                 status: REQUEST_RESULT.FAIL,
                 data: "未登录"

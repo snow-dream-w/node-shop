@@ -81,7 +81,7 @@ module.exports = class UserDao {
             status: REQUEST_RESULT.FAIL,
             data: {}
         }
-        await User.findOne({ _id: userId }, { _id: 0, password: 0, perference: 0 })
+        await User.findOne({ _id: userId }, { _id: 0, password: 0 })
             .then(data => {
                 if (data) {
                     result.status = REQUEST_RESULT.SUCCESS
