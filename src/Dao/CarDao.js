@@ -20,8 +20,21 @@ module.exports = class CarDao {
         }
         //判断商品是否超过购物车容量
         let count = await Car.countDocuments({ userId: carInfo.userId, status: CAR_STATUS.PUT })
+        //判断此商品是否存在购物车中
+        let goods = await Car.findOne({ userId: carInfo.userId, goodsId: carInfo.goodsId, status: CAR_STATUS.PUT })
         return new Promise(resolve => {
-            if (count <= CAR_MAX_NUM.COUNT) {
+            if (count <= CAR_MAX_NUM.COUNT && goods !== null) {
+                Car.updateOne({ userId: carInfo.userId, goodsId: carInfo.goodsId, status: CAR_STATUS.PUT }, { $inc: { num: carInfo.num } })
+                    .then(data => {
+                        result.data = data
+                        result.status = 'inc'
+                        resolve(result)
+                    })
+                    .catch(err => {
+                        result.data = err
+                        resolve(result)
+                    })
+            } else if (count <= CAR_MAX_NUM.COUNT && goods === null) {
                 new Car(carInfo).save((err, data) => {
                     if (err) {
                         result.data = err

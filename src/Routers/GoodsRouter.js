@@ -26,7 +26,7 @@ router.get("/goods/goodsDetail/:id",goods.getGoodsDetail);
 router.post("/goods/delete", user.keepLogin, goods.deleteGoodsInfo);
 
 //更新商品图片
-router.post("/goods/upload_goods_image", user.keepLogin, upload_goods_image.single("file"), goods.updateGoodsImage);
+router.post("/goods/upload_goods_image", upload_goods_image.single("file"), goods.updateGoodsImage);
 
 //获取下架商品
 router.get("/goods/shelf/:status", user.keepLogin, goods.getShelfGoods);

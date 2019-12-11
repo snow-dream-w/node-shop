@@ -91,7 +91,6 @@ exports.loginUserAccount = async (ctx) => {
             uid: data.telephone,
             role: data.role,
             id: data._id,
-            sex: data.sex
         }
         ctx.body = {
             status: 1,
@@ -179,7 +178,7 @@ exports.keepLogin = async (ctx, next) => {
         if (ctx.cookies.get("username")) {
             ctx.session.uid = ctx.cookies.get('uid')
             ctx.session.role = ctx.cookies.get('role')
-            ctx.sessionid = ctx.cookies.get('id')
+            ctx.session.id = ctx.cookies.get('id')
         } else {
             return ctx.body = {
                 status: REQUEST_RESULT.FAIL,
