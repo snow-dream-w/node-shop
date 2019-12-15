@@ -4,6 +4,7 @@ const { REQUEST_RESULT, GOODS_STATUS } = require('../Utils/status_enum')
 module.exports = class GoodsDao {
     /**
     * 商品上架
+    * @param {*商品ID，更新操作查重才会存在}
     * @param {*商品信息对象} goods包括以下内容
     * {*商品姓名} name
     * {*商品描述} description
@@ -21,21 +22,35 @@ module.exports = class GoodsDao {
     * {*评论数量} commentNum
     * {*状态} status
     */
-    async isGoodExists(goodsName) {
+    async isGoodExists(goodsName, goodsId) {
         let result = {
             status: REQUEST_RESULT.FAIL,
             data: {}
         }
-        await Goods.find({ name: goodsName })
-            .then(data => {
-                if (data.length !== 0) {
-                    result.data = "该商品名已存在"
-                } else {
-                    result.status = REQUEST_RESULT.SUCCESS
-                }
-            }).catch(err => {
-                result.data = err
-            })
+        if (goodsId) {
+            await Goods.find({ _id: { $ne: goodsId }, name: goodsName })
+                .then(data => {
+                    if (data.length !== 0) {
+                        result.data = "该商品名已存在"
+                    } else {
+                        result.status = REQUEST_RESULT.SUCCESS
+                    }
+                }).catch(err => {
+                    result.data = err
+                })
+        } else {
+            await Goods.find({ name: goodsName })
+                .then(data => {
+                    if (data.length !== 0) {
+                        result.data = "该商品名已存在"
+                    } else {
+                        result.status = REQUEST_RESULT.SUCCESS
+                    }
+                }).catch(err => {
+                    result.data = err
+                })
+        }
+
         return result
     }
     /**
@@ -59,35 +74,35 @@ module.exports = class GoodsDao {
             })
         })
     }
-    /**
-     * 更新商品图片
-     * @param {*商品编号} goodsId 
-     * @param {*图片名称} filename 
-     */
-    async updateGoodsImage(goodsId, filename) {
-        let result = {
-            status: REQUEST_RESULT.FAIL,
-            data: null
-        }
-        await Goods.updateOne({ _id: goodsId }, { $push: { images: filename } }, { runValidators: true }).then(data => {
-            result.status = REQUEST_RESULT.SUCCESS
-            result.data = data
-        }).catch(err => {
-            result.data = err
-        })
-        return result
-    }
+    // /**
+    //  * 更新商品图片
+    //  * @param {*商品编号} goodsId 
+    //  * @param {*图片名称} filename 
+    //  */
+    // async updateGoodsImage(goodsId, filename) {
+    //     let result = {
+    //         status: REQUEST_RESULT.FAIL,
+    //         data: null
+    //     }
+    //     await Goods.updateOne({ _id: goodsId }, { $push: { images: filename } }, { runValidators: true }).then(data => {
+    //         result.status = REQUEST_RESULT.SUCCESS
+    //         result.data = data
+    //     }).catch(err => {
+    //         result.data = err
+    //     })
+    //     return result
+    // }
     /**
      * 修改商品信息
-     * @param {*商品id} goodsId 
      * @param {*商品信息对象} goods 
      */
-    async updateGoodsInfo(goodsId, goods) {
+    async updateGoodsInfo(goods) {
         let result = {
             status: REQUEST_RESULT.FAIL,
             data: null
         }
-        await Goods.updateOne({ _id: goodsId }, { $set: goods }, { runValidators: true, new: true }).then(data => {
+        await Goods.updateOne({ _id: goods._id }, {$pull: {images: {$ne: 1}}})
+        await Goods.updateOne({ _id: goods._id }, { $set: goods }, { runValidators: true, new: true }).then(data => {
             result.status = REQUEST_RESULT.SUCCESS
             result.data = data
         }).catch(err => {
@@ -97,11 +112,10 @@ module.exports = class GoodsDao {
     }
     /**
      * 获取商品信息列表
-     * @param {*获取商品数量} limit
-     * 
-     * @param {*商品一级类型} types
-     * @param {*商品二级类型} type
-     * @param {*商品状态} status
+     * @param {* 获取商品数量} limit
+     * @param {* 商品一级类型} types
+     * @param {* 商品二级类型} type
+     * @param {* 商品状态} status
      */
     async getGoodsInfo(params) {
         let result = {
@@ -136,13 +150,13 @@ module.exports = class GoodsDao {
         return result
     }
     /**
-     * 修改商品集合里商品状态，已下架或已删除
+     * 修改商品集合里商品状态，已下架或已删除或重新上架
      * @param {*商品id} goodsId 
      */
     async shelfGoodsInfo(goodsId, status) {
         let result = {
             status: REQUEST_RESULT.FAIL,
-            data: "下架失败"
+            data: null
         }
         await Goods.updateOne({ _id: goodsId }, { $set: { status: status } })
             .then(data => {

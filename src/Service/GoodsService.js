@@ -41,24 +41,24 @@ module.exports = class GoodsService {
         }
         return result
     }
-    /**
-     * 更新商品图片
-     * @param {*商品编号} goodsId 
-     * @param {*图片名称} filename 
-     */
-    async updateGoodsImage(goodsId, filename) {
-        return await this.goodsDao.updateGoodsImage(goodsId, filename)
-    }
+    // /**
+    //  * 更新商品图片
+    //  * @param {*商品编号} goodsId 
+    //  * @param {*图片名称} filename 
+    //  */
+    // async updateGoodsImage(goodsId, filename) {
+    //     return await this.goodsDao.updateGoodsImage(goodsId, filename)
+    // }
     /**
      * 修改商品信息
      * @param {*商品id} goodsId 
      * @param {*商品信息对象} goods 
      */
-    async updateGoodsInfo(goodsId, goods) {
+    async updateGoodsInfo(goods) {
         let result = {}
-        result = await this.goodsDao.isGoodExists(goods.name)
+        result = await this.goodsDao.isGoodExists(goods.name, goods._id)
         if (result.status === REQUEST_RESULT.SUCCESS) {
-            result = await this.goodsDao.updateGoodsInfo(goodsId, goods)
+            result = await this.goodsDao.updateGoodsInfo(goods)
         }
         return result
     }
@@ -105,11 +105,11 @@ module.exports = class GoodsService {
         return await this.goodsDao.getGoodsDetail(goodsId)
     }
     /**
-     * 删除已下架商品
+     * 删除已下架商品/重新上架
      * @param {*商品id} goodsId 
      */
-    async deleteGoodsInfo(goodsId) {
-        return await this.goodsDao.shelfGoodsInfo(goodsId, GOODS_STATUS.DELETE)
+    async deleteGoodsInfo(goodsId, status) {
+        return await this.goodsDao.shelfGoodsInfo(goodsId, status)
     }
     /**
      * 获取倒查表商品

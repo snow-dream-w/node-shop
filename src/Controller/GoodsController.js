@@ -30,17 +30,11 @@ exports.addGoodsInfo = async (ctx) => {
  * 更新商品图片
  */
 exports.updateGoodsImage = async (ctx) => {
-    const goodsId = ctx.request.body.goodsId
     const filename = '/goods_image/' + ctx.req.file.filename
-    await new Promise(async (resolve) => {
-        let result = await goodsService.updateGoodsImage(goodsId, filename)
-        if (result.status === 1) {
-            result.data = filename
-        }
-        return resolve(result)
-    }).then(result => {
-        ctx.body = result
-    })
+    ctx.body = {
+        status: 1,
+        data: filename
+    }
 }
 /**
  * 修改商品信息
@@ -48,11 +42,12 @@ exports.updateGoodsImage = async (ctx) => {
 exports.updateGoodsInfo = async (ctx) => {
     //接收参数
     const goods = ctx.request.body
-    const goodsId = goods._id
+    goods.price = Number(goods.price)
+    goods.inventoryNum = Number(goods.inventoryNum)
 
     //发起保存请求
     await new Promise(async (resolve) => {
-        let result = await goodsService.updateGoodsInfo(goodsId, goods)
+        let result = await goodsService.updateGoodsInfo(goods)
         return resolve(result)
     }).then(result => {
         ctx.body = result
@@ -111,15 +106,16 @@ exports.getGoodsDetail = async (ctx) => {
     })
 }
 /**
- * 删除商品
+ * 删除商品/重新上架
  */
 exports.deleteGoodsInfo = async (ctx) => {
     //接受参数
     const goods = ctx.request.body
     const goodsId = goods._id
+    const status = goods.status
 
     await new Promise(async (resolve) => {
-        let result = await goodsService.deleteGoodsInfo(goodsId)
+        let result = await goodsService.deleteGoodsInfo(goodsId, status)
         return resolve(result)
     }).then(result => {
         ctx.body = result
